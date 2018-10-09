@@ -1,0 +1,68 @@
+<html>
+<!DOCTYPE html>
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, user-scalable=0">
+	<title>Celeb barát</title>
+    <link href="css" rel="stylesheet">
+	<link rel="stylesheet" href="c37c187.css">
+    <!--link rel="shortcut icon" sizes="16x16 32x32 48x48 60x60 120x120" href="https://celeb.datadat.hu/favicon.ico" -->
+
+        <!-- Facebook Pixel Code -->
+        <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window,document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '');
+            fbq('track', 'PageView');
+        </script>
+
+		<noscript>
+            <img height="1" width="1"
+                 src="https://www.facebook.com/tr?id=&ev=PageView&noscript=1"/>
+        </noscript>
+        <!-- End Facebook Pixel Code -->
+    
+</head>
+<body>
+<body>
+
+
+    <div class="wrapper">
+    <section id="login-screen">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+<% if (!user) { %>
+                <div id="facebook-content" class="btn-wrapper">
+                    <h1>
+                        Ki lenne a Te legjobb celeb barátod?
+                    </h1>
+				<a href="/auth/facebook"><img src="fb-login.jpg" background-size="cover", width="240", height="80"></a>
+                </div>
+<% } else { %>
+                <div id="best-friend-box">
+                    <h2 class="phrase-top phrase_1">Oldalkedveléseidet, életkorodat és életed meghatározó helyszíneit figyelembe véve Neked a legjobb barátod:</h2>
+                    <div>
+                    <img src="http://celeb.datadat.hu/">
+                    </div>
+                    <h2><a class="friend-url" target="_blank"></a></h2>
+                    <h2 class="phrase_2">lenne. Köszönjük, hogy használtad alkalmazásunkat!</h2>
+                </div>
+<% } %>
+            </div>
+        </div>
+    </div></section>
+    <div class="container-fluid footer">
+        <div class="text-center">
+            <a href="/privacy" target="_blank">Felhasználási feltételek</a>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
