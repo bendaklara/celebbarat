@@ -23,7 +23,7 @@ var pool = mysql.createPool({
 
 if(config.use_database==='true')
 {
-    connection.connect();
+    .connect();
 }
 
 // Passport session setup.
@@ -49,21 +49,26 @@ passport.use(new FacebookStrategy({
       //Check whether the User exists or not using profile.id
       if(config.use_database==='true')
       {
+
+		  pool.getConnection().then(function(connection){
+				connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
+				if(err) throw err;
+				if(rows.length===0)
+				  {
+					console.log("There is no such user, adding now");
+					console.log("Profile id: " + profile.id );
+					connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(profile.id) + "')");
+				  }
+				  else
+					{
+					  console.log("User already exists in database");
+					}
+				  });
+		  }).catch(function(err) {
+			done(err);
+		});		  
 		  
-		  
-      connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
-        if(err) throw err;
-        if(rows.length===0)
-          {
-            console.log("There is no such user, adding now");
-			console.log("Profile id: " + profile.id );
-            connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(profile.id) + "')");
-          }
-          else
-            {
-              console.log("User already exists in database");
-            }
-          });
+
 		  
 
       }
