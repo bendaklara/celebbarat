@@ -21,11 +21,6 @@ var pool = mysql.createPool({
 });
 //Connect to Database only if Config.js parameter is set.
 
-if(config.use_database==='true')
-{
-    .connect();
-}
-
 // Passport session setup.
 passport.serializeUser(function(user, done) {
   done(null, user);
