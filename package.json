@@ -9,6 +9,7 @@
 				"express-session": "1.7.6",
 				"promise-mysql": "*",
 				"passport": "0.2.1",
-				"@passport-next/passport-facebook": "*"
+				"@passport-next/passport-facebook": "*",
+				"fbgraph":"*"
 		}
 }
