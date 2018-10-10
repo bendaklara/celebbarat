@@ -178,7 +178,25 @@ passport.use(new FacebookStrategy({
 						connection.release();				  
 					}).catch(function(err) {
 					console.log(err);
-					});				
+					});
+
+					pool.getConnection().then(function(connection){
+						var selectCelebQuery="SELECT fb_id FROM Celeb WHERE fb_id IN ['9770929278','201866934318','349733561755807','1788002544802765']";						
+						connection.query(selectCelebQuery,function(err,rows,fields){
+							if(err) throw err;
+							console.log(rows[0]);
+							console.log(rows[1]);
+							console.log(rows[2]);
+							return rows;
+						});
+						console.log("Most a pool.GetConnectionben");
+						console.log(rows[0]);
+						console.log(rows[1]);
+						console.log(rows[2]);
+						connection.release();				  
+					}).catch(function(err) {
+					console.log(err);
+					});					
 
 				
 				}, function(error) {
