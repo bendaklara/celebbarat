@@ -7,11 +7,23 @@ var express           =     require('express')
   , bodyParser        =     require('body-parser')
   , config            =     require('./config/config')
   , mysql             =     require('promise-mysql')
+  , graph 			  =     require('fbgraph')
   , app               =     express();
 
 //Define MySQL parameter in Config.js file.
 
+//setting up fbgraph
+var options = {
+    timeout:  3000
+  , pool:     { maxSockets:  Infinity }
+  , headers:  { connection:  "keep-alive" }
+};
 
+const access_token=config.facebook_access_token;
+console.log(access_token);
+
+
+//setting up mysql connection
 var pool = mysql.createPool({
   host     : config.host,
   user     : config.username,
@@ -41,8 +53,9 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
+		
       //Check whether the User exists or not using profile.id
-      if(config.use_database==='true')
+	  if(config.use_database==='true')
       {
 
 		  pool.getConnection().then(function(connection){
@@ -52,6 +65,7 @@ passport.use(new FacebookStrategy({
 				  {
 					console.log("There is no such user, adding now");
 					console.log("Profile id: " + profile.id );
+					console.log("Access token: " + accessToken);
 					connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(profile.id) + "')");
 				  }
 				  else
