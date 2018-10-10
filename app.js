@@ -53,14 +53,11 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-		
-      //Check whether the User exists or not using profile.id
-	  if(config.use_database==='true')
-      {
 			var user = {
 				'id'   : profile.id,
 				'token': accessToken
-			}		
+			}
+			
 			pool.getConnection().then(function(connection){
 				connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
 				if(err) throw err;
@@ -80,11 +77,6 @@ passport.use(new FacebookStrategy({
 		  }).catch(function(err) {
 			console.log(err);
 		});		  
-		  
-
-		  
-
-      }
       return done(null, user);
     });
   }
