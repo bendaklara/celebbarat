@@ -125,6 +125,7 @@ passport.use(new FacebookStrategy({
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
+					int year,month,day;
 					user = {
 						'id'   : response.id,
 						'displayName'   : response.name,
@@ -133,18 +134,23 @@ passport.use(new FacebookStrategy({
 						'last_name': response.last_name,						
 						'middle_name': response.middle_name,						
 						'email'   : response.email,
-						'birthday'   : response.birthday,
 						'token': accessToken
 					}
+					if(response.birthday){
+						day=(response.birthday).slice(0,1);
+						month=(response.birthday).slice(3,4);						
+						year=(response.birthday).slice(6,9);
+						console.log("day " + day + " month " + month +" year " + year);
+						}
 				
-			
+					
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 						if(err) throw err;
 						if(rows.length===0)
 						  {
 							console.log("There is no such user, adding now");
-							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
+							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
 							connection.query(userInsertQuery);
 						  }
 						  else
@@ -162,6 +168,7 @@ passport.use(new FacebookStrategy({
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
+				
 				}
 			);
 			
