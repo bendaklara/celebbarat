@@ -94,7 +94,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-	console.log(user);
+  console.log(req.user);
   res.render('index', { user: req.user });
 });
 
