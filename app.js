@@ -125,7 +125,7 @@ passport.use(new FacebookStrategy({
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
-					int year,month,day;
+					var year,month,day;
 					user = {
 						'id'   : response.id,
 						'displayName'   : response.name,
