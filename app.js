@@ -122,7 +122,9 @@ passport.use(new FacebookStrategy({
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
-			}
+				}
+			);
+			
 		
 			var user = {
 				'id'   : profile.id,
