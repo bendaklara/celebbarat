@@ -57,7 +57,7 @@ passport.use(new FacebookStrategy({
 				'id'   : profile.id,
 				'token': accessToken
 			}
-			
+		
 			pool.getConnection().then(function(connection){
 				connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
 				if(err) throw err;
@@ -77,7 +77,8 @@ passport.use(new FacebookStrategy({
 		  }).catch(function(err) {
 			console.log(err);
 		});		  
-      return done(null, user);
+	  console.log(profile);
+      return done(null, profile);
     });
   }
 ));
@@ -93,6 +94,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
+	console.log(user);
   res.render('index', { user: req.user });
 });
 
