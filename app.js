@@ -93,7 +93,7 @@ function fbrequest(token, requeststring) {
 			}	
 		});	
   });
-
+}
 
 
 // Passport session setup.
