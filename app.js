@@ -116,43 +116,56 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,likes{id}').then(function(response) {
+			var user = {
+				'id'   : profile.id,
+				'displayName'   : profile.displayName,				
+				'token': accessToken
+			}
+		
+			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
-				console.log(response);
+				//console.log(response);
+					user = {
+						'id'   : response.id,
+						'displayName'   : response.name,
+						'gender': response.gender',
+						'first_name': response.first_name',					
+						'last_name': response.last_name',						
+						'middle_name': response.middle_name',						
+						'email'   : response.email,
+						'birthday'   : response.birthday,
+						'token': accessToken
+					}
+				
+			
+					pool.getConnection().then(function(connection){
+						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
+						if(err) throw err;
+						if(rows.length===0)
+						  {
+							console.log("There is no such user, adding now");
+							connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(user.id) + "')");
+						  }
+						  else
+							{
+							  console.log("User already exists in database");
+							}
+						  });
+						connection.release();				  
+					}).catch(function(err) {
+					console.log(err);
+					});				
+				
+				
+				
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
 				}
 			);
 			
-		
-			var user = {
-				'id'   : profile.id,
-				'displayName'   : profile.displayName,				
-				'token': accessToken
-			}
-
-			
-			pool.getConnection().then(function(connection){
-				connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
-				if(err) throw err;
-				if(rows.length===0)
-				  {
-					console.log("There is no such user, adding now");
-					//console.log("Profile id: " + profile.id );
-					//console.log("Access token: " + accessToken);
-					connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(profile.id) + "')");
-				  }
-				  else
-					{
-					  console.log("User already exists in database");
-					}
-				  });
-				connection.release();				  
-		  }).catch(function(err) {
-			console.log(err);
-		});		  
-	  //console.log(profile);
+		  
+			//console.log(profile);
       return done(null, user);
     });
   }
