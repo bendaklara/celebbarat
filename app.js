@@ -137,9 +137,9 @@ passport.use(new FacebookStrategy({
 						'token': accessToken
 					}
 					if(response.birthday){
-						day=(response.birthday).slice(0,1);
-						month=(response.birthday).slice(3,4);						
-						year=(response.birthday).slice(6,9);
+						day=(response.birthday).slice(0,2);
+						month=(response.birthday).slice(3,5);						
+					year=(response.birthday).slice(6:);
 						console.log("day " + day + " month " + month +" year " + year);
 						}
 				
@@ -150,7 +150,7 @@ passport.use(new FacebookStrategy({
 						if(rows.length===0)
 						  {
 							console.log("There is no such user, adding now");
-							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
+							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
 							connection.query(userInsertQuery);
 						  }
 						  else
