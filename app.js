@@ -125,7 +125,7 @@ passport.use(new FacebookStrategy({
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
-					var year,month,day,birthday;
+					var year,month,day,birthday,likes;
 					user = {
 						'token': accessToken,
 						'id'   : response.id,
@@ -154,29 +154,50 @@ passport.use(new FacebookStrategy({
 					}	
 					if(response.email){
 						user.email=response.email;
-					}	
+					}
+					if(response.likes.data){
+						likes=response.likes.data;
+					}
+					console.log(likes);
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
-						if(err) throw err;
-						if(rows.length===0)
-							{
-							console.log("There is no such user, adding now");
-							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
-							connection.query(userInsertQuery);
-						} else {
-							console.log("User already exists in database");
+							if(err) throw err;
+							if(rows.length===0)
+								{
+								console.log("There is no such user, adding now");
+								
+								var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
+								
+								connection.query(userInsertQuery);
 							
-							var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
-							console.log(userUpdateQuery);
-							connection.query(userUpdateQuery);
-							  
+							} else {
+								console.log("User already exists in database");
+								
+								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
+								
+								connection.query(userUpdateQuery);
+								  
 							}
-						  });
+						});
 						connection.release();				  
 					}).catch(function(err) {
 					console.log(err);
 					});				
-				
+
+					pool.getConnection().then(function(connection){
+						var selectCelebQuery="SELECT fb_id FROM Celeb WHERE fb_id IN ['9770929278','201866934318','349733561755807','1788002544802765']";						
+						return connection.query(selectCelebQuery,function(err,rows,fields)
+						connection.release();
+						}).then(function(rows){
+							console.log(rows[0];)
+							console.log(rows[1];)
+							console.log(rows[2];)
+							// Query the items for a ring that Frodo owns.
+						var result = connection.query('select * from items where `owner`="' + rows[0].id + '" and `name`="ring"');
+				  
+						}).catch(function(err) {
+							console.log(err);
+						});
 				
 				
 				}, function(error) {
