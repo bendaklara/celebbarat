@@ -57,15 +57,18 @@ passport.use(new FacebookStrategy({
       //Check whether the User exists or not using profile.id
 	  if(config.use_database==='true')
       {
-
-		  pool.getConnection().then(function(connection){
+			var user = {
+				'id'   : profile.id,
+				'token': accessToken
+			}		
+			pool.getConnection().then(function(connection){
 				connection.query("SELECT * from Fb_User where fb_id="+profile.id,function(err,rows,fields){
 				if(err) throw err;
 				if(rows.length===0)
 				  {
 					console.log("There is no such user, adding now");
-					console.log("Profile id: " + profile.id );
-					console.log("Access token: " + accessToken);
+					//console.log("Profile id: " + profile.id );
+					//console.log("Access token: " + accessToken);
 					connection.query("INSERT into Fb_User(fb_id) VALUES('" + String(profile.id) + "')");
 				  }
 				  else
