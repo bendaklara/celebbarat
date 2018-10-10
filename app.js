@@ -125,32 +125,41 @@ passport.use(new FacebookStrategy({
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
-					var year,month,day;
+					var year,month,day,birthday;
 					user = {
+						'token': accessToken,
 						'id'   : response.id,
 						'displayName'   : response.name,
-						'gender': response.gender,
 						'first_name': response.first_name,					
 						'last_name': response.last_name,						
-						'middle_name': response.middle_name,						
-						'email'   : response.email,
-						'token': accessToken
-					}
+						'middle_name': "NULL",						
+						'gender': "NULL",
+						'email'   : "NULL",
+						'birthday': "NULL"
+					};
+					
 					if(response.birthday){
 						day=(response.birthday).slice(0,2);
 						month=(response.birthday).slice(3,5);						
-					year=(response.birthday).slice(6);
+						year=(response.birthday).slice(6);
 						console.log("day " + day + " month " + month +" year " + year);
-						}
-				
-					
+						birthday=year+"-"+month+"-"+day;
+						user.birthday=birthday;
+					}	
+					if(response.middle_name){
+						user.middle_name=response.middle_name;
+					}
+					if(response.gender){
+						user.gender=response.gender;
+					}	
+
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 						if(err) throw err;
 						if(rows.length===0)
 						  {
 							console.log("There is no such user, adding now");
-							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
+							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 							connection.query(userInsertQuery);
 						  }
 						  else
