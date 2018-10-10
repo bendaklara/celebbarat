@@ -55,7 +55,7 @@ passport.use(new FacebookStrategy({
     process.nextTick(function () {
 			var user = {
 				'id'   : profile.id,
-				'displayName'   : displayName,				
+				'displayName'   : profile.displayName,				
 				'token': accessToken
 			}
 		
