@@ -125,7 +125,7 @@ passport.use(new FacebookStrategy({
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
-					var year,month,day,birthday,likes;
+					var year,month,day,birthday;
 					user = {
 						'token': accessToken,
 						'id'   : response.id,
@@ -154,11 +154,7 @@ passport.use(new FacebookStrategy({
 					}	
 					if(response.email){
 						user.email=response.email;
-					}
-					if(response.likes.data){
-						likes=response.likes.data;
-					}
-					console.log(likes);
+					}	
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 							if(err) throw err;
@@ -180,36 +176,10 @@ passport.use(new FacebookStrategy({
 							}
 						});
 						connection.release();				  
+					}).catch(function(err) {
+					console.log(err);
 					});				
 
-					pool.getConnection().then(function(connection){
-						var selectCelebQuery="SELECT fb_id FROM Celeb WHERE fb_id IN ['9770929278','201866934318','349733561755807','1788002544802765']";						
-						connection.query(selectCelebQuery,function(err,rows,fields){
-							if(err) throw err;
-							console.log(rows[0]);
-							console.log(rows[1]);
-							console.log(rows[2]);
-							return rows;
-						});
-						console.log("Most a pool.GetConnectionben");
-						console.log(rows[0]);
-						console.log(rows[1]);
-						console.log(rows[2]);
-					}
-					
-/*					pool.getConnection().then(function(connection){
-						var selectCelebQuery="SELECT fb_id FROM Celeb WHERE fb_id IN ['9770929278','201866934318','349733561755807','1788002544802765']";						
-						return connection.query(selectCelebQuery,function(err,rows,fields);
-						}).then(function(rows){
-							console.log(rows[0];)
-							console.log(rows[1];)
-							console.log(rows[2];)
-							// Query the items for a ring that Frodo owns.
-							connection.release();
-						}).catch(function(err) {
-							console.log(err);
-						});
-				*/
 				
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
