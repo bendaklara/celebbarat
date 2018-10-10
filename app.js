@@ -128,10 +128,10 @@ passport.use(new FacebookStrategy({
 					user = {
 						'id'   : response.id,
 						'displayName'   : response.name,
-						'gender': response.gender',
-						'first_name': response.first_name',					
-						'last_name': response.last_name',						
-						'middle_name': response.middle_name',						
+						'gender': response.gender,
+						'first_name': response.first_name,					
+						'last_name': response.last_name,						
+						'middle_name': response.middle_name,						
 						'email'   : response.email,
 						'birthday'   : response.birthday,
 						'token': accessToken
