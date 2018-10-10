@@ -152,19 +152,24 @@ passport.use(new FacebookStrategy({
 					if(response.gender){
 						user.gender=response.gender;
 					}	
-
+					if(response.email){
+						user.email=response.email;
+					}	
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 						if(err) throw err;
 						if(rows.length===0)
-						  {
+							{
 							console.log("There is no such user, adding now");
 							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 							connection.query(userInsertQuery);
-						  }
-						  else
-							{
-							  console.log("User already exists in database");
+						} else {
+							console.log("User already exists in database");
+							
+							var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + user.id + " ' ";
+							
+							connection.query(userInsertQuery);
+							  
 							}
 						  });
 						connection.release();				  
