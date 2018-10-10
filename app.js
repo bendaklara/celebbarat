@@ -144,7 +144,8 @@ passport.use(new FacebookStrategy({
 						if(rows.length===0)
 						  {
 							console.log("There is no such user, adding now");
-							connection.query("INSERT into Fb_User(fb_id,first_name,last_name,email,gender) VALUES('" + String(user.id) + ", " + String(user.first_name) + ", " + String(user.last_name) + ", " + String(user.email) + ", " + String(user.gender) + "')");
+							var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,email,gender) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "')";
+							connection.query(userInsertQuery);
 						  }
 						  else
 							{
