@@ -166,9 +166,9 @@ passport.use(new FacebookStrategy({
 						} else {
 							console.log("User already exists in database");
 							
-							var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + user.id + " ' ";
+							var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + " ' ";
 							
-							connection.query(userInsertQuery);
+							connection.query(userUpdateQuery);
 							  
 							}
 						  });
