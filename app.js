@@ -59,9 +59,9 @@ passport.use(new FacebookStrategy({
 					  console.log("User already exists in database");
 					}
 				  });
-			connection.release();				  
+				connection.release();				  
 		  }).catch(function(err) {
-			done(err);
+			console.log(err);
 		});		  
 		  
 
