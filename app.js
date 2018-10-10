@@ -139,8 +139,8 @@ passport.use(new FacebookStrategy({
 					};
 					
 					if(response.birthday){
-						day=(response.birthday).slice(0,2);
-						month=(response.birthday).slice(3,5);						
+						month=(response.birthday).slice(0,2);
+						day=(response.birthday).slice(3,5);						
 						year=(response.birthday).slice(6);
 						console.log("day " + day + " month " + month +" year " + year);
 						birthday=year+"-"+month+"-"+day;
