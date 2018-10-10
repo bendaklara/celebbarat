@@ -55,6 +55,7 @@ passport.use(new FacebookStrategy({
     process.nextTick(function () {
 			var user = {
 				'id'   : profile.id,
+				'displayName'   : displayName,				
 				'token': accessToken
 			}
 		
@@ -78,7 +79,7 @@ passport.use(new FacebookStrategy({
 			console.log(err);
 		});		  
 	  console.log(profile);
-      return done(null, profile);
+      return done(null, user);
     });
   }
 ));
