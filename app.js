@@ -206,8 +206,26 @@ passport.use(new FacebookStrategy({
 					
 					pool.getConnection().then(function(connection){
 						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
+						var genderBinary=2;
+						if(user.gender=='female'){
+							genderBinary=1;
+						}
+						else if(user.gender=='male'){
+							genderBinary=0;
+						}
 						connection.query(selectCelebQuery).then(function(rows){
-							console.log(rows[0]);
+							if(genderBinary==2){
+								if(rows==undefined){
+									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF("1974-08-18", Celeb.birthday) ) LIMIT 1"
+									connection.query(selectYourCelebQuery);	
+									console.log(rows[0]);								
+								} 
+								else{
+									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender=" + String(genderBinary) + " ORDER BY ABS( DATEDIFF("1974-08-18", Celeb.birthday) ) LIMIT 1"
+									connection.query(selectYourCelebQuery);	
+									console.log(rows[0]);
+								}
+							}
 						});						
 						connection.release();
 					}).catch(function(err) {
