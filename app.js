@@ -278,13 +278,16 @@ app.get('/', function(req, res){
 	pool.getConnection().then(function(connection){
 		var facebookLink='';
 		var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
+		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
-			req.user.celeb_fb_id=rows[0].celeb_fb_id;
-			facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-			console.log(facebookLink);
-			req.user.fbLink=facebookLink;
-			console.log("Req User updated");	
-			console.log(user)
+			if(rows[0].celeb_fb_id){
+				req.user.celeb_fb_id=rows[0].celeb_fb_id;
+				facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+				console.log(facebookLink);
+				req.user.fbLink=facebookLink;
+				console.log("Req User updated");	
+				console.log(user)
+			}
 			res.render('index', { user: req.user });
 		});						
 		connection.release();
