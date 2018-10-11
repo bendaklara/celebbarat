@@ -20,7 +20,7 @@ var options = {
 };
 
 const access_token=config.facebook_access_token;
-console.log(access_token);
+//console.log(access_token);
 
 
 //setting up mysql connection
@@ -116,27 +116,23 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-			var user = {
-				'id'   : profile.id,
-				'displayName'   : profile.displayName,				
-				'token': accessToken
-			}
-		
+			var user = {'token': accessToken,
+						'id'   : profile.id,
+						'displayName'   : profile.displayName,
+						'first_name': 'NULL',					
+						'last_name': 'NULL',						
+						'middle_name': 'NULL',						
+						'gender': 'NULL',
+						'email'   : 'NULL',
+						'birthday': 'NULL'};
+			console.log(user);			
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				//console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
 					var year,month,day,birthday,likes;
-					user = {
-						'token': accessToken,
-						'id'   : response.id,
-						'displayName'   : response.name,
-						'first_name': response.first_name,					
-						'last_name': response.last_name,						
-						'middle_name': "NULL",						
-						'gender': "NULL",
-						'email'   : "NULL",
-						'birthday': "NULL"
-					};
+					user.first_name=response.first_name;
+					user.last_name=response.last_name;
+					user.middle_name=response.middle_name;
 					
 					if(response.birthday){
 						month=(response.birthday).slice(0,2);
@@ -154,6 +150,9 @@ passport.use(new FacebookStrategy({
 					if(response.email){
 						user.email=response.email;
 					}
+					console.log("User feltoltve.");
+					console.log(user);
+					
 					if(response.likes.data){
 						likes=response.likes.data;
 					}
@@ -165,8 +164,8 @@ passport.use(new FacebookStrategy({
 						 likeList= likeList+likes[i].id + ', ';
 						 likeInsertQuery=likeInsertQuery+user.id + "', '" + likes[i].id + "'), ('";
 					}					
-					console.log("LikeInsertQuery:");
-					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
+					//console.log("LikeInsertQuery:");
+					//console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
 					//console.log("LikeList:");
 					//console.log(likeList.slice(0,likeList.length-2));
 					
@@ -215,7 +214,7 @@ passport.use(new FacebookStrategy({
 						}
 						connection.query(selectCelebQuery).then(function(rows){
 							if(genderBinary==2){
-								if(rows==undefined){
+								if(rows===undefined){
 									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
 									connection.query(selectYourCelebQuery);	
 									console.log(rows[0]);								
@@ -240,8 +239,8 @@ passport.use(new FacebookStrategy({
 				}
 			);
 			
-		  
-			//console.log(profile);
+	  console.log("User legvégén");
+	  console.log(user);
       return done(null, user);
     });
   }
@@ -258,7 +257,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-  console.log(req.user);
+  //console.log(req.user);
   res.render('index', { user: req.user });
 });
 
