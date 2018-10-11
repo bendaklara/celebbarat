@@ -215,25 +215,30 @@ passport.use(new FacebookStrategy({
 							genderBinary=0;
 						}
 						connection.query(selectCelebQuery).then(function(rows){
-							console.log(rows[0]);
-							if(genderBinary==2){
-								if(rows[0]===undefined){
-									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
-									connection.query(selectYourCelebQuery, function(rows,fields){
-										//console.log(rows[0]);								
+							if(rows[0]===undefined){
+								if(genderBinary==2){
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
+									connection.query(selectYourCelebQuery, function(rows){
+										var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id) VALUES ('"+ user.id+ "', '"+ rows[0]+"')";
+										console.log(sqlCelebUpdate);
+										connection.query(sqlCelebUpdate);
 									});	
-								} 
+								}
+								else{
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(genderBinary) + "' ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									connection.query(selectYourCelebQuery).then(function(rows){
+										console.log(rows[0])
+										console.log(rows[0].facebook_id)
+										var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id) VALUES ('"+ user.id+ "', '"+ rows[0]+"')";
+										console.log(sqlCelebUpdate);
+										connection.query(sqlCelebUpdate);
+									});
+								}
 							}
-							else{
-								var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary) + "' ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
-								connection.query(selectYourCelebQuery).then(function(rows){
-									console.log(rows[0])
-								});
-							}							
 						});						
 						connection.release();
-						console.log("Az adatbázisok után a user");
-						console.log(user);
+						//console.log("Az adatbázisok után a user.");
+						//console.log(user);
 						return user;
 					}).catch(function(err) {
 						console.log(err);
@@ -243,13 +248,14 @@ passport.use(new FacebookStrategy({
 				console.log(response);
 				}
 			);
-		console.log("Elertem a vegere.");			
-		console.log(user);			
+		//console.log("Elertem a vegere.");			
+		//console.log(user);			
 		return done(null, user);
     });
   }
 ));
 
+console.log(user);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
