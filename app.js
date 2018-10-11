@@ -125,7 +125,7 @@ passport.use(new FacebookStrategy({
 						'gender': 'NULL',
 						'email'   : 'NULL',
 						'birthday': 'NULL'};
-			console.log(user);			
+			//console.log(user);			
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				//console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
@@ -150,8 +150,8 @@ passport.use(new FacebookStrategy({
 					if(response.email){
 						user.email=response.email;
 					}
-					console.log("User feltoltve.");
-					console.log(user);
+					//console.log("User feltoltve.");
+					//console.log(user);
 					
 					if(response.likes.data){
 						likes=response.likes.data;
@@ -213,25 +213,26 @@ passport.use(new FacebookStrategy({
 							genderBinary=0;
 						}
 						connection.query(selectCelebQuery).then(function(rows){
+							console.log(rows);
 							if(genderBinary==2){
 								if(rows===undefined){
 									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
-									connection.query(selectYourCelebQuery);	
-									console.log(rows[0]);								
+									connection.query(selectYourCelebQuery, function(rows,fields){
+										console.log(rows[0]);								
+									});	
 								} 
-								else{
-									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender=" + String(genderBinary) + " ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
-									connection.query(selectYourCelebQuery);	
-									console.log(rows[0]);
-								}
 							}
+							else{
+								var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender=" + String(genderBinary) + " ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
+								connection.query(selectYourCelebQuery, function(rows,fields){
+									console.log(rows[0]);								
+								});
+							}							
 						});						
 						connection.release();
 					}).catch(function(err) {
 						console.log(err);
-					});					
-
-				
+					});
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
@@ -239,8 +240,6 @@ passport.use(new FacebookStrategy({
 				}
 			);
 			
-	  console.log("User legvégén");
-	  console.log(user);
       return done(null, user);
     });
   }
