@@ -215,6 +215,7 @@ passport.use(new FacebookStrategy({
 						}
 						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
 						connection.query(selectCelebQuery).then(function(rows){
+							console.log(rows[0].facebook_id);
 							if(rows[0]===undefined){
 								if(genderBinary==2){
 									var selectYourCelebQuery="SELECT facebook_id FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
@@ -252,7 +253,7 @@ passport.use(new FacebookStrategy({
 									});	
 								}
 								else{
-									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(user.gender)+ "' AND facebook_id IN " + String(likeList.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(user.gender)+ "' AND facebook_id IN " + String(likesUnion.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									console.log(selectYourCelebQuery);
 									
 									connection.query(selectYourCelebQuery).then(function(rows){
