@@ -190,7 +190,7 @@ passport.use(new FacebookStrategy({
 							console.log(rows[0]);
 							console.log(rows[1]);
 							console.log(rows[2]);
-						});						
+						}));						
 						connection.release();
 					}).catch(function(err) {
 						console.log(err);
