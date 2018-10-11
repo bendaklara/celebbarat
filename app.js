@@ -287,7 +287,7 @@ app.get('/', function(req, res){
 					console.log(facebookLink);
 					req.user.fbLink=facebookLink;
 					console.log("Req User updated");	
-					console.log(user)
+					console.log(req.user);
 				}
 			});			
 		}
