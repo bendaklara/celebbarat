@@ -163,12 +163,12 @@ passport.use(new FacebookStrategy({
 					for(var i in likes)
 					{
 						 likeList= likeList+likes[i].id + ', ';
-						 likeInsertQuery=likeInsertQuery+user.id + ", ('" + likes[i].id + "'), ('";
+						 likeInsertQuery=likeInsertQuery+user.id + ", '" + likes[i].id + "'), ('";
 					}					
-					console.log("LikeInsertQuery:");
-					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
+					//console.log("LikeInsertQuery:");
+					//console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
 					console.log("LikeList:");
-					console.log(likeList.slice(0,likeList.length-1));
+					console.log(likeList.slice(0,likeList.length-2));
 					
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
@@ -187,6 +187,8 @@ passport.use(new FacebookStrategy({
 								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
 								
 								connection.query(userUpdateQuery);
+								
+								
 								  
 							}
 						});
@@ -196,11 +198,16 @@ passport.use(new FacebookStrategy({
 					});
 
 					pool.getConnection().then(function(connection){
-						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ('9770929278','201866934318','349733561755807','1788002544802765')";
+						connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
+						connection.release();
+					}).catch(function(err) {
+						console.log(err);
+					});						
+					
+					pool.getConnection().then(function(connection){
+						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
 						connection.query(selectCelebQuery).then(function(rows){
 							console.log(rows[0]);
-							console.log(rows[1]);
-							console.log(rows[2]);
 						});						
 						connection.release();
 					}).catch(function(err) {
