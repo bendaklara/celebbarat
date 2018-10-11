@@ -142,7 +142,6 @@ passport.use(new FacebookStrategy({
 						month=(response.birthday).slice(0,2);
 						day=(response.birthday).slice(3,5);						
 						year=(response.birthday).slice(6);
-						console.log("day " + day + " month " + month +" year " + year);
 						birthday=year+"-"+month+"-"+day;
 						user.birthday=birthday;
 					}	
@@ -190,9 +189,6 @@ passport.use(new FacebookStrategy({
 							return rows;
 						});
 						console.log("Most a pool.GetConnectionben");
-						console.log(rows[0]);
-						console.log(rows[1]);
-						console.log(rows[2]);
 						connection.release();				  
 					}).catch(function(err) {
 					console.log(err);
