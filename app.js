@@ -42,7 +42,7 @@ function fbrequest(token, requeststring) {
 	.setAccessToken(token)
 	.setOptions(options)
 	.get(requeststring , function(err, fbresponse) {
-		console.log('Raw Fb response: ' + JSON.stringify(fbresponse));
+		//console.log('Raw Fb response: ' + JSON.stringify(fbresponse));
 		
 		// FB error handling
 		if (fbresponse && fbresponse['error']) {
@@ -123,7 +123,7 @@ passport.use(new FacebookStrategy({
 			}
 		
 			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
-				console.log('Visszakaptam a fbrequest-tol a response-t');
+				//console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
 					var year,month,day,birthday,likes;
 					user = {
@@ -156,9 +156,20 @@ passport.use(new FacebookStrategy({
 					}
 					if(response.likes.data){
 						likes=response.likes.data;
-					}	
-
-					//console.log(likes);
+					}
+					var likeList='';
+					var likeInsertQuery="INSERT INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
+					
+					for(var like i in likes)
+					{
+						 likelist+ = likes[i].id + ', ';
+						 likeInsertQuery+=user.id + ", ('" + likes[i].id + "'), ('";
+					}					
+					console.log("LikeInsertQuery:");
+					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
+					console.log("LikeList:");
+					console.log(likeList.slice(0,likeList.length-1));
+					
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 							if(err) throw err;
