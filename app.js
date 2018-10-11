@@ -158,7 +158,7 @@ passport.use(new FacebookStrategy({
 						likes=response.likes.data;
 					}	
 
-					console.log(likes);
+					//console.log(likes);
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
 							if(err) throw err;
@@ -184,17 +184,18 @@ passport.use(new FacebookStrategy({
 					console.log(err);
 					});
 
-					pool.getConnection().then(function(connection){
+					pool.getConnection().then(function(connection, rows){
 						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ('9770929278','201866934318','349733561755807','1788002544802765')";						
 						connection.query(selectCelebQuery,function(err,rows,fields){
 							if(err) throw err;
 							return rows;
-						}).then(function(rows) {
-							console.log(rows[0]);
-							console.log(rows[1]);
-							console.log(rows[2]);
 						});
 						connection.release();
+						return rows;
+					}).then(function(rows) {
+						console.log(rows[0]);
+						console.log(rows[1]);
+						console.log(rows[2]);
 					}).catch(function(err) {
 						console.log(err);
 					});					
