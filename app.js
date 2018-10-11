@@ -242,7 +242,7 @@ passport.use(new FacebookStrategy({
 								}
 								console.log(likesUnion);
 								if(genderBinary==2){
-									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " + String(likeList.slice(0,likeList.length-2) + ") ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " + String(likeList.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									console.log(selectYourCelebQuery);
 									connection.query(selectYourCelebQuery, function(rows){
 										var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id) VALUES ('"+ String(user.id)+ "', '"+ String(rows[0].facebook_id) +"')";
@@ -251,7 +251,7 @@ passport.use(new FacebookStrategy({
 									});	
 								}
 								else{
-									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(user.gender)+ "' AND facebook_id IN " + String(likeList.slice(0,likeList.length-2) + ") ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(user.gender)+ "' AND facebook_id IN " + String(likeList.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									console.log(selectYourCelebQuery);
 									
 									connection.query(selectYourCelebQuery).then(function(rows){
