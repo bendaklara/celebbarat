@@ -124,18 +124,17 @@ passport.use(new FacebookStrategy({
 						'gender': 'NULL',
 						'email'   : 'NULL',
 						'birthday': 'NULL'};			
-			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
-					console.log('Ez most a komplex respones');
-					console.log(response);
-					console.log("Visszakaptam a FB response-t.");			
+			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
+					//console.log('Ez most a komplex response.');
+					//console.log(response);
+					//console.log("Visszakaptam a FB response-t.");			
 					user=response['user'];
-					console.log(user);
+					//console.log(user);
 					response=response['fbresponse'];
-					console.log(response);					
+					//console.log(response);					
 					var year,month,day,birthday,likes;
 					user.first_name=response.first_name;
 					user.last_name=response.last_name;
-					user.middle_name=response.middle_name;
 					
 					if(response.birthday){
 						month=(response.birthday).slice(0,2);
@@ -236,11 +235,16 @@ passport.use(new FacebookStrategy({
 					}).catch(function(err) {
 						console.log(err);
 					});
+					console.log("fbresponse végén a user");			
+					return user;
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
 				
 				}
+				console.log("fbresponse után a user");			
+				console.log(user);			
+				return user;
 			);
 		console.log("Elertem a vegere.");			
 		console.log(user);			
