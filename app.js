@@ -221,7 +221,7 @@ passport.use(new FacebookStrategy({
 									console.log(rows[0]);								
 								} 
 								else{
-									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender=" + String(genderBinary) + " ORDER BY ABS( DATEDIFF("1974-08-18", Celeb.birthday) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender=" + String(genderBinary) + " ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
 									connection.query(selectYourCelebQuery);	
 									console.log(rows[0]);
 								}
