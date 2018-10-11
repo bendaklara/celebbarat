@@ -162,8 +162,8 @@ passport.use(new FacebookStrategy({
 					
 					for(var i in likes)
 					{
-						 likelist+ = likes[i].id + ', ';
-						 likeInsertQuery+=user.id + ", ('" + likes[i].id + "'), ('";
+						 likeList= likeList+likes[i].id + ', ';
+						 likeInsertQuery=likeInsertQuery+user.id + ", ('" + likes[i].id + "'), ('";
 					}					
 					console.log("LikeInsertQuery:");
 					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
