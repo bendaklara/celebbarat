@@ -213,18 +213,20 @@ passport.use(new FacebookStrategy({
 							genderBinary=0;
 						}
 						connection.query(selectCelebQuery).then(function(rows){
-							console.log(rows);
+							console.log(rows[0]);
 							if(genderBinary==2){
-								if(rows===undefined){
+								if(rows[0]===undefined){
 									var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
 									connection.query(selectYourCelebQuery, function(rows,fields){
-										console.log(rows[0]);								
+										//console.log(rows[0]);								
 									});	
 								} 
 							}
 							else{
 								var selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary) + "' ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
-								connection.query(selectYourCelebQuery);
+								connection.query(selectYourCelebQuery).then(function(rows){
+									console.log(rows[0])
+								});
 							}							
 						});						
 						connection.release();
