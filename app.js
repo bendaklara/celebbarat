@@ -32,7 +32,7 @@ var pool = mysql.createPool({
   connectionLimit: 10
 });
 
-function fbrequest(token, requeststring) {
+function fbrequest(user, token, requeststring) {
 	return new Promise(function(resolve, reject) {
 	var success = '0';
 	var generic_error_message='Generic error message'; // Ezt kapja, ha nem azonosítottuk a hiba okát.
@@ -84,7 +84,7 @@ function fbrequest(token, requeststring) {
 		//Real functionality.
 		else {if (fbresponse) {
 				var message="success";
-				resolve(fbresponse); //This is the meat of the application
+				resolve({'user': user, 'fbresponse': fbresponse); //This is the meat of the application
 				} else {
 					errormessage='Thrown error'
 					reject(errormessage);
@@ -124,11 +124,15 @@ passport.use(new FacebookStrategy({
 						'middle_name': 'NULL',						
 						'gender': 'NULL',
 						'email'   : 'NULL',
-						'birthday': 'NULL'};
-			//console.log(user);			
-			fbrequest(accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
+						'birthday': 'NULL'};			
+			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
 				//console.log('Visszakaptam a fbrequest-tol a response-t');
 				//console.log(response);
+					console.log("Visszakaptam a FB response-t.");			
+
+					user=response.user;
+					console.log(user);
+					response=response.fbresponse;					
 					var year,month,day,birthday,likes;
 					user.first_name=response.first_name;
 					user.last_name=response.last_name;
@@ -239,8 +243,9 @@ passport.use(new FacebookStrategy({
 				
 				}
 			);
-			
-      return done(null, user);
+		console.log("Elertem a vegere.");			
+		console.log(user);			
+		return done(null, user);
     });
   }
 ));
