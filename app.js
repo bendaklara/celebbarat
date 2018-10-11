@@ -232,19 +232,16 @@ passport.use(new FacebookStrategy({
 							}							
 						});						
 						connection.release();
+						console.log("Az adatbázisok után a user");
+						console.log(user);
+						return user;
 					}).catch(function(err) {
 						console.log(err);
 					});
-					console.log("fbresponse végén a user");			
-					return user;
 				}, function(error) {
 				console.log('Visszakaptam a fbrequest error response-t');		
 				console.log(response);
-				
 				}
-				console.log("fbresponse után a user");			
-				console.log(user);			
-				return user;
 			);
 		console.log("Elertem a vegere.");			
 		console.log(user);			
