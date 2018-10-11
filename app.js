@@ -240,7 +240,7 @@ passport.use(new FacebookStrategy({
 								var likesUnion="('"
 								for(var i in rows)
 								{
-									 likesUnion= likesUnion+rows[i].facebook_id + ', ';
+									 likesUnion= likesUnion+rows[i].facebook_id + "', '";
 								}
 								console.log(likesUnion);
 								if(genderBinary==2){
