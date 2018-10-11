@@ -255,7 +255,7 @@ passport.use(new FacebookStrategy({
   }
 ));
 
-console.log(user);
+//console.log(user);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -267,7 +267,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-  //console.log(req.user);
+  console.log(req.user);
   res.render('index', { user: req.user });
 });
 
