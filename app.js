@@ -158,12 +158,12 @@ passport.use(new FacebookStrategy({
 						likes=response.likes.data;
 					}
 					var likeList='';
-					var likeInsertQuery="INSERT INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
+					var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
 					
 					for(var i in likes)
 					{
 						 likeList= likeList+likes[i].id + ', ';
-						 likeInsertQuery=likeInsertQuery+user.id + ", '" + likes[i].id + "'), ('";
+						 likeInsertQuery=likeInsertQuery+user.id + "', '" + likes[i].id + "'), ('";
 					}					
 					console.log("LikeInsertQuery:");
 					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
