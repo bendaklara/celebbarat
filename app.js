@@ -236,14 +236,14 @@ passport.use(new FacebookStrategy({
 								}
 							}
 							else{
-								likesUnion="('"
-								for(var i in likes)
+								var likesUnion="('"
+								for(var i in rows)
 								{
-									 likesUnion= likesUnion+likes[i].id + ', ';
+									 likesUnion= likesUnion+likes[i].facebook_id + ', ';
 								}
 								console.log(likesUnion);
 								if(genderBinary==2){
-									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " + String(likeList.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " + String(likesUnion.slice(0,likeList.length-2)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									console.log(selectYourCelebQuery);
 									connection.query(selectYourCelebQuery, function(rows){
 										var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id) VALUES ('"+ String(user.id)+ "', '"+ String(rows[0].facebook_id) +"')";
@@ -269,7 +269,6 @@ passport.use(new FacebookStrategy({
 						connection.release();
 						//console.log("Az adatbázisok után a user.");
 						//console.log(user);
-						return user;
 					}).catch(function(err) {
 						console.log(err);
 					});
