@@ -253,9 +253,8 @@ passport.use(new FacebookStrategy({
 									});	
 								}
 								else{
-									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(user.gender)+ "' AND facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									var selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE gender='" + String(genderBinary)+ "' AND facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									console.log(selectYourCelebQuery);
-									
 									connection.query(selectYourCelebQuery).then(function(rows){
 										console.log(rows[0])
 										console.log(rows[0].facebook_id)
