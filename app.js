@@ -165,10 +165,10 @@ passport.use(new FacebookStrategy({
 						 likeList= likeList+likes[i].id + ', ';
 						 likeInsertQuery=likeInsertQuery+user.id + ", '" + likes[i].id + "'), ('";
 					}					
-					//console.log("LikeInsertQuery:");
-					//console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
-					console.log("LikeList:");
-					console.log(likeList.slice(0,likeList.length-2));
+					console.log("LikeInsertQuery:");
+					console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
+					//console.log("LikeList:");
+					//console.log(likeList.slice(0,likeList.length-2));
 					
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
