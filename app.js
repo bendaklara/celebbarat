@@ -123,7 +123,10 @@ passport.use(new FacebookStrategy({
 						'middle_name': 'NULL',						
 						'gender': 'NULL',
 						'email'   : 'NULL',
-						'birthday': 'NULL'};			
+						'birthday': 'NULL',
+						'celeb_fb_id': 'NULL',
+						'celeb_fbLink': 'NULL',
+						};			
 			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
 					//console.log('Ez most a komplex response.');
 					//console.log(response);
@@ -216,7 +219,6 @@ passport.use(new FacebookStrategy({
 						}
 						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
 						connection.query(selectCelebQuery).then(function(rows){
-							console.log(rows[0].facebook_id);
 							if(rows[0]===undefined){
 								if(genderBinary==2){
 									selectYourCelebQuery="SELECT facebook_id FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
@@ -231,7 +233,6 @@ passport.use(new FacebookStrategy({
 								{
 									 likesUnion= likesUnion+rows[i].facebook_id + "', '";
 								}
-								console.log(likesUnion);
 								if(genderBinary==2){
 									selectYourCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 								}
@@ -254,7 +255,10 @@ passport.use(new FacebookStrategy({
 				console.log(response);
 				}
 			);
-		//console.log(user);			
+			
+		//console.log(user);
+		//Itt lehet hozzáadni a Userhez a kedvenc celebet, és annak adatait, lekéréssel.
+		
 		return done(null, user);
     });
   }
@@ -271,9 +275,22 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-  console.log("Req User");	
-  console.log(req.user);
-  res.render('index', { user: req.user });
+	pool.getConnection().then(function(connection){
+		var facebookLink='';
+		var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
+		connection.query(getUserCelebQuery).then(function(rows){
+			req.user.celeb_fb_id=rows[0].celeb_fb_id;
+			facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+			console.log(facebookLink);
+			req.user.fbLink=facebookLink;
+			console.log("Req User updated");	
+			console.log(user)
+			res.render('index', { user: req.user });
+		});						
+		connection.release();
+	}).catch(function(err) {
+		console.log(err);
+	});	  
 });
 
 app.get('/friend', function(req, res){
