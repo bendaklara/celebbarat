@@ -83,8 +83,7 @@ function fbrequest(user, token, requeststring) {
 		
 		//Real functionality.
 		else {if (fbresponse) {
-				var message="success";
-				resolve({'user': user, 'fbresponse': fbresponse); //This is the meat of the application
+				resolve({'user': user, 'fbresponse': fbresponse}); //This is the meat of the application
 				} else {
 					errormessage='Thrown error'
 					reject(errormessage);
@@ -126,13 +125,13 @@ passport.use(new FacebookStrategy({
 						'email'   : 'NULL',
 						'birthday': 'NULL'};			
 			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response) {
-				//console.log('Visszakaptam a fbrequest-tol a response-t');
-				//console.log(response);
+					console.log('Ez most a komplex respones');
+					console.log(response);
 					console.log("Visszakaptam a FB response-t.");			
-
-					user=response.user;
+					user=response['user'];
 					console.log(user);
-					response=response.fbresponse;					
+					response=response['fbresponse'];
+					console.log(response);					
 					var year,month,day,birthday,likes;
 					user.first_name=response.first_name;
 					user.last_name=response.last_name;
