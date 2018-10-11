@@ -277,7 +277,7 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', function(req, res){
 	pool.getConnection().then(function(connection){
 		var facebookLink='';
-		if(req.user.id!=undefined){
+		if(req.user!=undefined){
 			var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
 			console.log(getUserCelebQuery);
 			connection.query(getUserCelebQuery).then(function(rows){
