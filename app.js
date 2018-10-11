@@ -213,6 +213,7 @@ passport.use(new FacebookStrategy({
 						else if(user.gender=='male'){
 							genderBinary=0;
 						}
+						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
 						connection.query(selectCelebQuery).then(function(rows){
 							if(rows[0]===undefined){
 								if(genderBinary==2){
