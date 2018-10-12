@@ -312,30 +312,25 @@ app.get('/', function(req, res){
 		console.log("req.user defined.");
 		pool.getConnection().then(function(connection){
 			mysqlrequest(req.user, connection).then(function(response) {
-				req.user=response;
-				console.log(req.user);
-			}, function(error) {
-				console.log("Error! ..." + error);
-				console.log("User id:   " + error.id);				
-			});	
-		
-			if(req.user.celeb_fb_id==='NULL'){
-				console.log("req.user.celeb_fb_id undefined");
-				mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
 					console.log(req.user);
+					console.log(req.user.celeb_fb_id);			
+					res.render('index', { user: req.user });
+					connection.release();				
+				
 				}, function(error) {
 					console.log("Error! ..." + error);
-					console.log("User id:   " + error.id);				
-				});			
-			}
-			else{
-				console.log(req.user.celeb_fb_id);			
-				res.render('index', { user: req.user });
-				connection.release();				
-			}
-		
-		
+					req.user=error;	
+					console.log("req.user.celeb_fb_id undefined");
+					mysqlrequest(req.user, connection).then(function(response) {
+						req.user=response;
+						console.log(req.user);
+					}, function(error) {
+						console.log("Error! ..." + error);
+						console.log("User id:   " + error.id);				
+					});			
+				}
+			);	
 		}).catch(function(err) {
 			console.log(err);
 		});	
