@@ -173,14 +173,14 @@ passport.use(new FacebookStrategy({
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + ")')";
-								connection.query(userInsertCelebQuery);
-								connection.query(userInsertQuery);
+								//connection.query(userInsertCelebQuery);
+								//connection.query(userInsertQuery);
 							
 							} else {
 								//console.log("User already exists in database");
 								
 								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
-								console.log(userUpdateQuery);
+								//console.log(userUpdateQuery);
 								//connection.query(userUpdateQuery);
 								  
 							}
@@ -191,6 +191,7 @@ passport.use(new FacebookStrategy({
 					});
 					
 					var likeList='';
+					var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ('1')";
 					if(response.likes){
 						likes=response.likes.data;
 						var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
@@ -201,7 +202,7 @@ passport.use(new FacebookStrategy({
 						}
 						
 							pool.getConnection().then(function(connection){
-								connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
+								//connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
 								connection.release();
 							}).catch(function(err) {
 								console.log(err);
@@ -209,10 +210,8 @@ passport.use(new FacebookStrategy({
 						
 						
 						likeList="("+likeList.slice(0,likeList.length-2)+")";
+						//selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " +likeList;
 						
-					}
-					else{
-						likeList="('1')"
 					}
 					//console.log("Likelist   " + likeList)
 
@@ -227,7 +226,8 @@ passport.use(new FacebookStrategy({
 						else if(user.gender=='male'){
 							genderBinary=0;
 						}
-						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " +likeList;
+						console.log(selectCelebQuery);
+						console.log(likeList);
 						connection.query(selectCelebQuery).then(function(rows){
 							if(rows[0]===undefined){
 								if(genderBinary==2){
