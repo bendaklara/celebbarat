@@ -311,7 +311,12 @@ app.get('/', function(req, res){
 	if(req.user!=undefined){
 		console.log("req.user defined.");
 		pool.getConnection().then(function(connection){
-			if(req.user.celeb_fb_id===undefined){
+			mysqlrequest(req.user, connection).then(function(response) {
+				req.user=response;
+				console.log(user);
+			});	
+		
+			if(req.user.celeb_fb_id==='NULL'){
 				console.log("req.user.celeb_fb_id undefined");
 				mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
