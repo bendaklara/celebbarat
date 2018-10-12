@@ -274,22 +274,68 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
+/*function waitAndPrintString(string){
+  return new Promise((resolve, reject) => {
+    setTimeout(
+      () => {
+       console.log(string);
+       resolve();
+      }, 
+     //do function
+    )
+  })
+}
+
+function printAll(connection,getUserCelebQuery,user){
+  waitAndPrintString("Waiting before attempting to get Celeb_User again.");
+  .then(() => {
+			do {
+				connection.query(getUserCelebQuery).then(function(rows){
+					if(rows[0]===undefined){
+						console.log("Still no mysql update of Celeb_User.");
+					}
+					else if(rows[0].celeb_fb_id){
+						facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+						console.log(facebookLink);
+						req.user.celeb_fb_id=rows[0].celeb_fb_id;
+						req.user.fbLink=facebookLink;
+						console.log("Req User updated");	
+						console.log(req.user);
+					}
+				});	
+			}
+			while (rows[0]===undefined);	  
+			//function
+  })
+}
+*/
+
 app.get('/', function(req, res){
 	pool.getConnection().then(function(connection){
 		var facebookLink='';
 		if(req.user!=undefined){
 			var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
-			console.log(getUserCelebQuery);
-			connection.query(getUserCelebQuery).then(function(rows){
-				if(rows[0].celeb_fb_id){
-					req.user.celeb_fb_id=rows[0].celeb_fb_id;
-					facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-					console.log(facebookLink);
-					req.user.fbLink=facebookLink;
-					console.log("Req User updated");	
-					console.log(req.user);
+			//console.log(getUserCelebQuery);
+			setTimeout(({
+				do {
+					connection.query(getUserCelebQuery).then(function(rows){
+						if(rows[0]===undefined){
+							console.log("Still no mysql update of Celeb_User.");
+						}
+						else if(rows[0].celeb_fb_id){
+							facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+							console.log(facebookLink);
+							req.user.celeb_fb_id=rows[0].celeb_fb_id;
+							req.user.fbLink=facebookLink;
+							console.log("Req User updated");	
+							console.log(req.user);
+						}
+					});	
 				}
-			});			
+				while (rows[0]===undefined);	  
+			}), 3000);
+			
+		
 		}
 		res.render('index', { user: req.user });
 		connection.release();
