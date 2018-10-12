@@ -291,9 +291,6 @@ function printAll(){
   .then(() => {
     return printString("B")
   })
-  .then(() => {
-    return printString("C")
-  })
 }
 
 app.get('/', function(req, res){
@@ -303,17 +300,11 @@ app.get('/', function(req, res){
 			var celebUserUpdated=false;
 			var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
 			connection.query(getUserCelebQuery).then(function(rows){
+				console.log("First Query");
 				if(rows[0]!=undefined){
+					console.log("Celeb User updated");
 					celebUserUpdated=true;
-				}
-			});
-			//console.log(getUserCelebQuery);
-				do {
-					connection.query(getUserCelebQuery).then(function(rows){
-						if(rows[0]===undefined){
-							printAll();
-						}
-						else if(rows[0].celeb_fb_id){
+						if(rows[0].celeb_fb_id){
 							celebUserUpdated=true;
 							facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
 							console.log(facebookLink);
@@ -321,12 +312,28 @@ app.get('/', function(req, res){
 							req.user.fbLink=facebookLink;
 							console.log("Req User updated");	
 							console.log(req.user);
-						}
-					});	
+						}						
 				}
-				while (!celebUserUpdated);
-			
-		
+			});
+				//console.log(getUserCelebQuery);
+			while(!celebUserUpdated) {
+				console.log("Query again");
+				connection.query(getUserCelebQuery).then(function(rows){
+					if(rows[0]===undefined){
+						console.log("Going to print al");
+						printAll();
+					}
+					else if(rows[0].celeb_fb_id){
+						celebUserUpdated=true;
+						facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+						console.log(facebookLink);
+						req.user.celeb_fb_id=rows[0].celeb_fb_id;
+						req.user.fbLink=facebookLink;
+						console.log("Req User updated");	
+						console.log(req.user);
+					}
+				});	
+			}
 		}
 		res.render('index', { user: req.user });
 		connection.release();
