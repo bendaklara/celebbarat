@@ -193,6 +193,8 @@ passport.use(new FacebookStrategy({
 					var likeList='';
 					var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ('1')";
 					if(response.likes){
+						console.log("Na, ebben van like");
+						console.log(response.likes);
 						likes=response.likes.data;
 						var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
 						for(var i in likes)
@@ -292,8 +294,7 @@ function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
 		console.log("User id in Promise: "  + user.id);
-		//var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
-		var getUserCelebQuery="SELECT * FROM Celeb WHERE name LIKE '%Benda Klara%'";
+		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
 		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
 				console.log("Facebook query returned." );
