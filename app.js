@@ -268,7 +268,7 @@ passport.use(new FacebookStrategy({
 									if(userInUserCeleb){
 										sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
 									}
-									console.log(sqlCelebUpdate);
+									//console.log(sqlCelebUpdate);
 									connection.query(sqlCelebUpdate);
 									
 								});
@@ -316,9 +316,9 @@ app.use(express.static(__dirname + '/public'));
 function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
-		console.log("User id in Promise: "  + user.id);
+		//console.log("User id in Promise: "  + user.id);
 		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
-		console.log(getUserCelebQuery);
+		//console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
 				//console.log("Facebook query returned." );
 				if(rows[0]!=undefined){
@@ -372,7 +372,7 @@ app.get('/', function(req, res){
 					connection.release();				
 				
 				}, function(error) {
-					console.log("Error! ..." + error);
+					//console.log("Error! ..." + error);
 					req.user=error;					
 					//console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
