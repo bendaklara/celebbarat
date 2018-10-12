@@ -228,11 +228,10 @@ passport.use(new FacebookStrategy({
 						else if(user.gender=='male'){
 							genderBinary=0;
 						}
-						console.log(selectCelebQuery);
-						console.log(likeList);
+						//console.log(selectCelebQuery);
+						//console.log(likeList);
 						var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
 						connection.query(isUserInUser_Celeb).then(function(rows){
-							console.log
 							var userInUserCeleb=true;
 							if(rows.length===0)
 							{
@@ -263,7 +262,7 @@ passport.use(new FacebookStrategy({
 									
 								}
 								connection.query(selectYourCelebQuery).then(function(rows){
-									console.log(userInUserCeleb);
+									//console.log(userInUserCeleb);
 									var sqlCelebUpdate="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id,celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '"  +String(rows[0].name) + "')";
 									if(userInUserCeleb){
 										sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
