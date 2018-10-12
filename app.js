@@ -352,9 +352,11 @@ function mysqlrequest(user, connection) {
 					user.celeb_fb_id=rows[0].celeb_fb_id;						
 					user.celebName=rows[0].celeb_name;
 					user.fbLink=facebookLink;
-					console.log("Req User updated");	
-						//console.log(user);
-					fbrequest(user.token, rows[0].celeb_fb_id +'/picture')
+					console.log("Req User updated");
+					var graphurl=rows[0].celeb_fb_id +"/picture";
+					console.log("Celeb pic graph url: " + graphurl)
+					console.log("User token" + user.token);
+					fbrequest(user.token, graphurl)
 						.then(function(response) {
 							user.celeb_pic=response;
 							console.log("Celeb pic: " + user.celeb_pic);
