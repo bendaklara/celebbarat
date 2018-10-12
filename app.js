@@ -296,12 +296,11 @@ function mysqlrequest(user, connection) {
 					setTimeout(
 					  () => {
 					   console.log("Celeb User Not updated");
-					   console.log(user);
+					   //console.log(user);
 					   reject(user);
 					  }, 
 					 3000
-					)					
-
+					)
 				}
 		});	
 	});
@@ -315,6 +314,9 @@ app.get('/', function(req, res){
 			mysqlrequest(req.user, connection).then(function(response) {
 				req.user=response;
 				console.log(user);
+			}, function(error) {
+				console.log("Error! ..." + error);
+				console.log("User id:   " + error.id);				
 			});	
 		
 			if(req.user.celeb_fb_id==='NULL'){
@@ -322,6 +324,9 @@ app.get('/', function(req, res){
 				mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
 					console.log(user);
+				}, function(error) {
+					console.log("Error! ..." + error);
+					console.log("User id:   " + error.id);				
 				});			
 			}
 			else{
