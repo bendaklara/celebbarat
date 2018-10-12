@@ -264,10 +264,11 @@ passport.use(new FacebookStrategy({
 								}
 								connection.query(selectYourCelebQuery).then(function(rows){
 									console.log(userInUserCeleb);
-									var userInsertCelebQuery="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id,celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '"  +String(rows[0].name) + "')";
+									var sqlCelebUpdate="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id,celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '"  +String(rows[0].name) + "')";
 									if(userInUserCeleb){
-										var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
+										sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
 									}
+									console.log(sqlCelebUpdate);
 									connection.query(sqlCelebUpdate);
 									
 								});
