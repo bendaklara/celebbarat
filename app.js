@@ -42,12 +42,11 @@ function fbrequest(user, token, requeststring) {
 	.setAccessToken(token)
 	.setOptions(options)
 	.get(requeststring , function(err, fbresponse) {
-		//console.log('Raw Fb response: ' + JSON.stringify(fbresponse));
-		
 		// FB error handling
 		if (fbresponse && fbresponse['error']) {
 			// extract the error from the json
 			console.log('Graph api error!!!!');
+			console.log('Raw Fb response: ' + JSON.stringify(fbresponse));
 			var error=fbresponse['error'];
 			if (error && error['code']) {
 			// extract the error code
@@ -126,7 +125,7 @@ passport.use(new FacebookStrategy({
 						'birthday': 'NULL',
 						'celeb_fb_id': 'NULL'
 						};
-			console.log("User id" + user.id + "  displayName:  " + user.displayName );
+			//console.log("User id" + user.id + "  displayName:  " + user.displayName );
 			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
 					//console.log('Ez most a komplex response.');
 					//console.log(response);
@@ -165,14 +164,14 @@ passport.use(new FacebookStrategy({
 							if(err) throw err;
 							if(rows.length===0)
 								{
-								console.log("There is no such user, adding now");
+								//console.log("There is no such user, adding now");
 								
 								var userInsertQuery="INSERT into Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 								
 								connection.query(userInsertQuery);
 							
 							} else {
-								console.log("User already exists in database");
+								//console.log("User already exists in database");
 								
 								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
 								
@@ -208,7 +207,7 @@ passport.use(new FacebookStrategy({
 					else{
 						likeList="('1')"
 					}
-					console.log("Likelist   " + likeList)
+					//console.log("Likelist   " + likeList)
 
 						
 					
@@ -247,9 +246,9 @@ passport.use(new FacebookStrategy({
 							}
 							connection.query(selectYourCelebQuery).then(function(rows){
 								var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('"+ String(user.id)+ "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";
-								console.log(sqlCelebUpdate);
+								//console.log(sqlCelebUpdate);
 								connection.query(sqlCelebUpdate);
-								console.log("Kiment a CelebUpdate query.");
+								//console.log("Kiment a CelebUpdate query.");
 								
 							});
 						});						
@@ -285,17 +284,17 @@ app.use(express.static(__dirname + '/public'));
 function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
-		console.log("User id in Promise: "  + user.id);
+		//console.log("User id in Promise: "  + user.id);
 		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
 		connection.query(getUserCelebQuery).then(function(rows){
 				if(rows[0]!=undefined){
-					console.log("Celeb User Updated");
+					//console.log("Celeb User Updated");
 					facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-					console.log("Celeb name: " + rows[0].celeb_name);
+					//console.log("Celeb name: " + rows[0].celeb_name);
 					user.celeb_fb_id=rows[0].celeb_fb_id;						
 					user.celeb_name=rows[0].celeb_name;
 					user.fbLink=facebookLink;
-					console.log("Req User updated");
+					//console.log("Req User updated");
 					resolve(user);
 /*					var graphurl=rows[0].celeb_fb_id +"/picture";
 					console.log("Celeb pic graph url: " + graphurl)
@@ -315,7 +314,7 @@ function mysqlrequest(user, connection) {
 				} else {
 					setTimeout(
 					  () => {
-					   console.log("Celeb User Not updated");
+					   //console.log("Celeb User Not updated");
 					   //console.log(user);
 					   reject(user);
 					  }, 
@@ -329,7 +328,7 @@ function mysqlrequest(user, connection) {
 
 app.get('/', function(req, res){
 	if(req.user!=undefined){
-		console.log("req.user defined.");
+		//console.log("req.user defined.");
 		pool.getConnection().then(function(connection){
 			mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
@@ -339,25 +338,25 @@ app.get('/', function(req, res){
 					connection.release();				
 				
 				}, function(error) {
-					console.log("Error! ..." + error);
+					//console.log("Error! ..." + error);
 					req.user=error;					
-					console.log("req.user.celeb_fb_id undefined");					
+					//console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
 						req.user=response;
-						console.log("After first error, then success the user is: " + req.user.id);
+						//console.log("After first error, then success the user is: " + req.user.id);
 						res.render('index', { user: req.user });
 						connection.release();				
 					}, function(error) {
-						console.log("Error! ..." + error);
+						//console.log("Error! ..." + error);
 						req.user=error;					
-						console.log("req.user.celeb_fb_id undefined");					
+						//console.log("req.user.celeb_fb_id undefined");					
 						mysqlrequest(req.user, connection).then(function(response) {
 							req.user=response;
-							console.log("After second error, then success the user is: " + req.user.id);
+							//console.log("After second error, then success the user is: " + req.user.id);
 							res.render('index', { user: req.user });
 							connection.release();				
 						}, function(error) {
-							console.log("Error! ..." + error);
+							//console.log("Error! ..." + error);
 							res.render('index', { user: req.user });
 						});						
 					});			
@@ -368,7 +367,7 @@ app.get('/', function(req, res){
 		});	
 	}
 	else{
-		console.log("req.user undefined");
+		//console.log("req.user undefined");
 		res.render('index', { user: req.user });		
 	}
 	
