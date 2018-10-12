@@ -274,22 +274,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
-function waitAndPrintString(string){
+function printString(string){
   return new Promise((resolve, reject) => {
     setTimeout(
       () => {
        console.log(string);
        resolve();
       }, 
-     3000
+     1000
     )
   })
 }
 
 function printAll(){
-  waitAndPrintString("Waiting before attempting to get Celeb_User again.");
+  printString("A")
   .then(() => {
-		console.log("Still no mysql update of Celeb_User.");
+    return printString("B")
+  })
+  .then(() => {
+    return printString("C")
   })
 }
 
