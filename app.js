@@ -382,6 +382,10 @@ app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
 });
 
+app.get('/privacy', ensureAuthenticated, function(req, res){
+  res.render('privacy');
+});
+
 app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email', 'public_profile', 'user_gender', 'user_birthday', 'user_likes']}));
 
 app.get('/auth/facebook/callback',
