@@ -292,7 +292,9 @@ function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
 		//console.log("User id in Promise: "  + user.id);
-		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
+		//var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
+		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id=108786010105448";
+		
 		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
 				console.log("Facebook query returned." );
@@ -347,12 +349,12 @@ app.get('/', function(req, res){
 					connection.release();				
 				
 				}, function(error) {
-					//console.log("Error! ..." + error);
+					console.log("Error! ..." + error);
 					req.user=error;					
 					//console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
 						req.user=response;
-						//console.log("After first error, then success the user is: " + req.user.id);
+						console.log("After first error, then success the user is: " + req.user.id);
 						res.render('index', { user: req.user });
 						connection.release();				
 					}, function(error) {
@@ -361,7 +363,7 @@ app.get('/', function(req, res){
 						//console.log("req.user.celeb_fb_id undefined");					
 						mysqlrequest(req.user, connection).then(function(response) {
 							req.user=response;
-							//console.log("After second error, then success the user is: " + req.user.id);
+							console.log("After second error, then success the user is: " + req.user.id);
 							res.render('index', { user: req.user });
 							connection.release();				
 						}, function(error) {
