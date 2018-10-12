@@ -43,7 +43,6 @@ function fbcelebrequest(token, requeststring) {
 	.setOptions(options)
 	.get(requeststring , function(err, fbresponse) {
 		console.log('Raw Fb response: ' + JSON.stringify(fbresponse));
-		
 		// FB error handling
 		if (fbresponse && fbresponse['error']) {
 			// extract the error from the json
@@ -79,21 +78,19 @@ function fbcelebrequest(token, requeststring) {
 			reject(errormessage);
 		} 
 		//End of FB error handling
-		
-		
 		//Real functionality.
-		else {if (fbresponse) {
+		else if (fbresponse) {
 				var picUrl;
 				if(response.data.url){
 					picUrl=response.data.url;
-				resolve(picUrl); //This is the meat of the application
+					resolve(picUrl); //This is the meat of the application
 				} else {
 					errormessage='Thrown error'
 					reject(errormessage);
-					
 				}
-			}	
-		});	
+			}
+		
+	});	
   });
 }
 
