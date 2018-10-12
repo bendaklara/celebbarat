@@ -256,8 +256,11 @@ passport.use(new FacebookStrategy({
 							var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
 							connection.query(isUserInUser_Celeb).then(function(rows){
 								var result=rows;
-								//console.log(result);
+								console.log(result);
+								console.log(selectYourCelebQuery);
 								connection.query(selectYourCelebQuery).then(function(rows, result){
+									console.log("After select your celeb query.");
+									console.log("Result: " + result);
 									var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;									
 									if(rows.length===0){
 										console.log("User not in User_Celeb")
