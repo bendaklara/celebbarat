@@ -81,8 +81,8 @@ function fbcelebrequest(token, requeststring) {
 		//Real functionality.
 		else if (fbresponse) {
 				var picUrl;
-				if(response.data.url){
-					picUrl=response.data.url;
+				if(fbresponse.data.url){
+					picUrl=fbresponse.data.url;
 					resolve(picUrl); //This is the meat of the application
 				} else {
 					errormessage='Thrown error'
