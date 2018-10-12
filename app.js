@@ -355,9 +355,9 @@ function mysqlrequest(user, connection) {
 				if(rows[0]!=undefined){
 					console.log("Celeb User Updated");
 					facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-						//console.log(facebookLink);
+					console.log("Celeb name: " + rows[0].celeb_name);
 					user.celeb_fb_id=rows[0].celeb_fb_id;						
-					user.celebName=rows[0].celeb_name;
+					user.celeb_name=rows[0].celeb_name;
 					user.fbLink=facebookLink;
 					console.log("Req User updated");
 					var graphurl=rows[0].celeb_fb_id +"/picture";
