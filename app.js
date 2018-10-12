@@ -143,7 +143,10 @@ passport.use(new FacebookStrategy({
 						year=(response.birthday).slice(6);
 						birthday=year+"-"+month+"-"+day;
 						user.birthday=birthday;
-					}	
+					}
+					else{
+						user.birthday='2000-01-01';
+					}
 					if(response.first_name){
 						user.first_name=response.first_name;
 					}
