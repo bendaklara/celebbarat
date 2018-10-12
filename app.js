@@ -350,7 +350,7 @@ function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
 		console.log("User id in Promise: "  + user.id);
-		var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(user.id);
+		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
 		connection.query(getUserCelebQuery).then(function(rows){
 				if(rows[0]!=undefined){
 					console.log("Celeb User Updated");
