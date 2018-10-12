@@ -124,8 +124,7 @@ passport.use(new FacebookStrategy({
 						'gender': 'NULL',
 						'email'   : 'NULL',
 						'birthday': 'NULL',
-						'celeb_fb_id': 'NULL',
-						'celeb_fbLink': 'NULL',
+						'celeb_fb_id': 'NULL'
 						};			
 			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
 					//console.log('Ez most a komplex response.');
@@ -324,7 +323,7 @@ app.get('/', function(req, res){
 					console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
 						req.user=response;
-						console.log("After first error, then success the user is: " + req.user);
+						console.log("After first error, then success the user is: " + req.user.id);
 						res.render('index', { user: req.user });
 						connection.release();				
 					}, function(error) {
@@ -333,7 +332,7 @@ app.get('/', function(req, res){
 						console.log("req.user.celeb_fb_id undefined");					
 						mysqlrequest(req.user, connection).then(function(response) {
 							req.user=response;
-							console.log("After first error, then success the user is: " + req.user);
+							console.log("After second error, then success the user is: " + req.user.id);
 							res.render('index', { user: req.user });
 							connection.release();				
 						}, function(error) {

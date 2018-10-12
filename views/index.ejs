@@ -49,9 +49,10 @@
                 </div>
 <% } else { %>
                 <div>
-                    <h2>Oldalkedveléseidet, életkorodat és életed meghatározó helyszíneit figyelembe véve Neked a legjobb barátod:</h2>
+                    <h2>Oldalkedveléseidet és életkorodat figyelembe véve Neked a legjobb barátod:</h2>
                     <div>
-                    <a target="_blank"><img src="http://celeb.datadat.hu/"></a>
+                    <a href=<%= user.fbLink%> target="_blank"><%= user.celeb_fb_id %></a>
+					<img src="">
                     </div>
                     <h2>lenne. Köszönjük, hogy használtad alkalmazásunkat!</h2>
                 </div>
