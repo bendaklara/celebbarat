@@ -254,14 +254,12 @@ passport.use(new FacebookStrategy({
 								
 							}
 							var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
-							connection.query(isUserInUser_Celeb);
-							
-/*							.then(function(connection, rows){
+							connection.query(isUserInUser_Celeb).then(function(rows){
 								var result=rows;
 								console.log(result);
-								connection.query(selectYourCelebQuery);
+								connection.query(selectYourCelebQuery);							
+								
 							});
-*/							
 						});						
 						connection.release();
 					}).catch(function(err) {
