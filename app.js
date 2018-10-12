@@ -412,7 +412,7 @@ app.get('/', function(req, res){
 							connection.release();				
 						}, function(error) {
 							console.log("Error! ..." + error);
-							res.render('error');
+							res.render('index', { user: req.user });
 						});						
 					});			
 				}
