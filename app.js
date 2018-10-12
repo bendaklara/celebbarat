@@ -241,7 +241,7 @@ passport.use(new FacebookStrategy({
 								
 							}
 							connection.query(selectYourCelebQuery).then(function(rows){
-								var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('"+ String(user.id)+ "', '"+ String(rows[0].facebook_id) + '", "' +String(rows[0].name) +"')";
+								var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('"+ String(user.id)+ "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";
 								console.log(sqlCelebUpdate);
 								connection.query(sqlCelebUpdate);
 								console.log("Kiment a CelebUpdate query.");
