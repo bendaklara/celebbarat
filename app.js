@@ -173,7 +173,7 @@ passport.use(new FacebookStrategy({
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + "')";
-								connection.query(userInsertCelebQuery);
+								//connection.query(userInsertCelebQuery);
 								connection.query(userInsertQuery);
 							
 							} else {
