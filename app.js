@@ -274,72 +274,62 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
-function printString(string){
-  return new Promise((resolve, reject) => {
-    setTimeout(
-      () => {
-       console.log(string);
-       resolve();
-      }, 
-     1000
-    )
-  })
+
+function mysqlrequest(connection, user) {
+	return new Promise(function(resolve, reject) {
+		var facebookLink='';
+		var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
+		connection.query(getUserCelebQuery).then(function(rows){
+				if(rows[0]!=undefined){
+					console.log("Celeb User Updated");
+					if(rows[0].celeb_fb_id){
+						facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
+						//console.log(facebookLink);
+						user.celeb_fb_id=rows[0].celeb_fb_id;
+						user.fbLink=facebookLink;
+						console.log("Req User updated");	
+						console.log(user);
+						}					
+					resolve(user);				
+				} else {
+					setTimeout(
+					  () => {
+					   console.log("Celeb User Not updated");
+					   console.log(user);
+					   reject(user);
+					  }, 
+					 3000
+					)					
+
+				}
+		});	
+	});
 }
 
-function printAll(){
-  printString("A")
-  .then(() => {
-    return printString("B")
-  })
-}
 
 app.get('/', function(req, res){
-	pool.getConnection().then(function(connection){
-		if(req.user!=undefined){
-			var facebookLink='';
-			var celebUserUpdated=false;
-			var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
-			connection.query(getUserCelebQuery).then(function(rows){
-				console.log("First Query");
-				if(rows[0]!=undefined){
-					console.log("Celeb User updated");
-					celebUserUpdated=true;
-						if(rows[0].celeb_fb_id){
-							celebUserUpdated=true;
-							facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-							console.log(facebookLink);
-							req.user.celeb_fb_id=rows[0].celeb_fb_id;
-							req.user.fbLink=facebookLink;
-							console.log("Req User updated");	
-							console.log(req.user);
-						}						
-				}
-			});
-				//console.log(getUserCelebQuery);
-			while(!celebUserUpdated) {
-				console.log("Query again");
-				connection.query(getUserCelebQuery).then(function(rows){
-					if(rows[0]===undefined){
-						console.log("Going to print al");
-						printAll();
-					}
-					else if(rows[0].celeb_fb_id){
-						celebUserUpdated=true;
-						facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
-						console.log(facebookLink);
-						req.user.celeb_fb_id=rows[0].celeb_fb_id;
-						req.user.fbLink=facebookLink;
-						console.log("Req User updated");	
-						console.log(req.user);
-					}
-				});	
+	if(req.user!=undefined){
+		pool.getConnection().then(function(connection){
+			if(req.user.celeb_fb_id===undefined){
+				mysqlrequest(req.user, connection).then(function(response) {
+					req.user=response;
+					console.log(user);
+				});			
 			}
-		}
-		res.render('index', { user: req.user });
-		connection.release();
-	}).catch(function(err) {
-		console.log(err);
-	});	  
+			else{
+				res.render('index', { user: req.user });
+				connection.release();				
+			}
+		
+		
+		}).catch(function(err) {
+			console.log(err);
+		});	
+	}
+	else{
+		res.render('index', { user: req.user });		
+	}
+	
 });
 
 app.get('/friend', function(req, res){
