@@ -172,16 +172,16 @@ passport.use(new FacebookStrategy({
 								//console.log("There is no such user, adding now");
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
-								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + "')";
-								//connection.query(userInsertCelebQuery);
+								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + ")')";
+								connection.query(userInsertCelebQuery);
 								connection.query(userInsertQuery);
 							
 							} else {
 								//console.log("User already exists in database");
 								
 								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
-								
-								connection.query(userUpdateQuery);
+								console.log(userUpdateQuery);
+								//connection.query(userUpdateQuery);
 								  
 							}
 						});
