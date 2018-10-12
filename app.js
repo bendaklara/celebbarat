@@ -216,6 +216,8 @@ passport.use(new FacebookStrategy({
 						
 					}
 					//console.log("Likelist   " + likeList)
+
+						
 					
 					pool.getConnection().then(function(connection){
 						var genderBinary=2;
@@ -228,48 +230,58 @@ passport.use(new FacebookStrategy({
 						}
 						console.log(selectCelebQuery);
 						console.log(likeList);
-						connection.query(selectCelebQuery).then(function(rows){
-							if(rows[0]===undefined){
-								if(genderBinary==2){
-									selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
-								}
-								else{
-									selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary) + "' ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
-								}
+						var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
+						connection.query(isUserInUser_Celeb).then(function(rows){
+							var userInUserCeleb=true;
+							if(rows===undefined)
+							{
+								userInUserCeleb=false;
 							}
-							else{
-								var likesUnion="('"
-								for(var i in rows)
-								{
-									 likesUnion= likesUnion+rows[i].facebook_id + "', '";
-								}
-								if(genderBinary==2){
-									selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
-								}
-								else{
-									selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary)+ "' AND facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
-								}
-								
-							}
-							var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
-							connection.query(isUserInUser_Celeb).then(function(rows){
-								console.log(rows);
-								if(rows.length===0){
-										connection.query(selectYourCelebQuery).then(function(rows){
-											console.log("After select your celeb query.");
-											var sqlCelebUpdate="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";										
-											connection.query(sqlCelebUpdate);
-										}
-								}
-								else{
-									connection.query(selectYourCelebQuery).then(function(rows){
-										console.log("After select your celeb query.");
-										var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;										
-										connection.query(sqlCelebUpdate);
+							
+							connection.query(selectCelebQuery).then(function(rows){
+								if(rows[0]===undefined){
+									if(genderBinary==2){
+										selectYourCelebQuery="SELECT facebook_id, name FROM Celeb ORDER BY ABS( DATEDIFF('" +user.birthday+ "', birthdate) ) LIMIT 1";
+									}
+									else{
+										selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary) + "' ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
 									}
 								}
+								else{
+									var likesUnion="('"
+									for(var i in rows)
+									{
+										 likesUnion= likesUnion+rows[i].facebook_id + "', '";
+									}
+									if(genderBinary==2){
+										selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									}
+									else{
+										selectYourCelebQuery="SELECT facebook_id, name FROM Celeb WHERE gender='" + String(genderBinary)+ "' AND facebook_id IN " + String(likesUnion.slice(0,likesUnion.length-3)) + ") ORDER BY ABS( DATEDIFF('" +String(user.birthday)+ "', birthdate) ) LIMIT 1";
+									}
+									
+								}
+								connection.query(selectYourCelebQuery).then(function(rows){
+									console.log(userInUserCeleb);
+									var userInsertCelebQuery="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id,celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '"  +String(rows[0].name) + "')";
+									if(userInUserCeleb){
+										var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
+									}
+									connection.query(sqlCelebUpdate);
+									
+								});
 							});							
+							
+							
+							
+							
+							
+							
 						});						
+						
+						
+						
+						
 						connection.release();
 					}).catch(function(err) {
 						console.log(err);
