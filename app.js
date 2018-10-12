@@ -253,7 +253,7 @@ passport.use(new FacebookStrategy({
 							}
 							connection.query(selectYourCelebQuery).then(function(rows){
 								var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
-								console.log(sqlCelebUpdate);
+								//console.log(sqlCelebUpdate);
 								connection.query(sqlCelebUpdate);
 								//console.log("Kiment a CelebUpdate query.");
 								
@@ -293,7 +293,9 @@ function mysqlrequest(user, connection) {
 		var facebookLink='';
 		//console.log("User id in Promise: "  + user.id);
 		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
+		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
+				console.log("Facebook query returned." );
 				if(rows[0]!=undefined){
 					//console.log("Celeb User Updated");
 					facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
