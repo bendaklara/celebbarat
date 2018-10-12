@@ -173,15 +173,15 @@ passport.use(new FacebookStrategy({
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
 								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + ")')";
-								connection.query(userInsertCelebQuery);
-								connection.query(userInsertQuery);
+								//connection.query(userInsertCelebQuery);
+								//connection.query(userInsertQuery);
 							
 							} else {
 								//console.log("User already exists in database");
 								
 								var userUpdateQuery="UPDATE Fb_User SET first_name='" + String(user.first_name) + "', last_name='" + String(user.last_name) + "', middle_name='" + String(user.middle_name) + "', email='" + String(user.email) + "', gender= '" + String(user.gender) + "', birthday= '" + String(user.birthday) + "' WHERE fb_id LIKE '" + String(user.id) + "'";
 								//console.log(userUpdateQuery);
-								connection.query(userUpdateQuery);
+								//connection.query(userUpdateQuery);
 								  
 							}
 						});
@@ -202,7 +202,7 @@ passport.use(new FacebookStrategy({
 						}
 						
 							pool.getConnection().then(function(connection){
-								connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
+								//connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
 								connection.release();
 							}).catch(function(err) {
 								console.log(err);
@@ -210,7 +210,7 @@ passport.use(new FacebookStrategy({
 						
 						
 						likeList="("+likeList.slice(0,likeList.length-2)+")";
-						selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " +likeList;
+						//selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " +likeList;
 						
 					}
 					//console.log("Likelist   " + likeList)
@@ -291,9 +291,10 @@ app.use(express.static(__dirname + '/public'));
 function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
-		//console.log("User id in Promise: "  + user.id);
-		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
-		//console.log(getUserCelebQuery);
+		console.log("User id in Promise: "  + user.id);
+		//var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
+		var getUserCelebQuery="SELECT * FROM Celeb WHERE name LIKE '%Benda Klara%'";
+		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
 				console.log("Facebook query returned." );
 				if(rows[0]!=undefined){
@@ -352,7 +353,7 @@ app.get('/', function(req, res){
 					//console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
 						req.user=response;
-						//console.log("After first error, then success the user is: " + req.user.id);
+						console.log("After first error, then success the user is: " + req.user.id);
 						res.render('index', { user: req.user });
 						connection.release();				
 					}, function(error) {
@@ -361,7 +362,7 @@ app.get('/', function(req, res){
 						//console.log("req.user.celeb_fb_id undefined");					
 						mysqlrequest(req.user, connection).then(function(response) {
 							req.user=response;
-							//console.log("After second error, then success the user is: " + req.user.id);
+							console.log("After second error, then success the user is: " + req.user.id);
 							res.render('index', { user: req.user });
 							connection.release();				
 						}, function(error) {
