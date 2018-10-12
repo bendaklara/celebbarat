@@ -299,7 +299,7 @@ function mysqlrequest(user, connection) {
 					   //console.log(user);
 					   reject(user);
 					  }, 
-					 3000
+					 5000
 					)
 				}
 		});	
@@ -313,7 +313,7 @@ app.get('/', function(req, res){
 		pool.getConnection().then(function(connection){
 			mysqlrequest(req.user, connection).then(function(response) {
 				req.user=response;
-				console.log(user);
+				console.log(req.user);
 			}, function(error) {
 				console.log("Error! ..." + error);
 				console.log("User id:   " + error.id);				
@@ -323,7 +323,7 @@ app.get('/', function(req, res){
 				console.log("req.user.celeb_fb_id undefined");
 				mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
-					console.log(user);
+					console.log(req.user);
 				}, function(error) {
 					console.log("Error! ..." + error);
 					console.log("User id:   " + error.id);				
