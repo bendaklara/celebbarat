@@ -126,7 +126,8 @@ passport.use(new FacebookStrategy({
 						'celeb_fb_id': 'NULL'
 						};
 			//console.log("User id" + user.id + "  displayName:  " + user.displayName );
-			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
+			//fields=id,name,gender,birthday,first_name,last_name,middle_name,likes{id}
+			fbrequest(user, accessToken, profile.id +'?fields=id,gender,birthday,likes.summary(total_count).limit(100){id}').then(function(response,user) {
 					//console.log('Ez most a komplex response.');
 					//console.log(response);
 					//console.log("Visszakaptam a FB response-t.");			
@@ -135,8 +136,6 @@ passport.use(new FacebookStrategy({
 					response=response['fbresponse'];
 					//console.log(response);					
 					var year,month,day,birthday,likes;
-					user.first_name=response.first_name;
-					user.last_name=response.last_name;
 					
 					if(response.birthday){
 						month=(response.birthday).slice(0,2);
@@ -145,6 +144,12 @@ passport.use(new FacebookStrategy({
 						birthday=year+"-"+month+"-"+day;
 						user.birthday=birthday;
 					}	
+					if(response.first_name){
+						user.first_name=response.first_name;
+					}
+					if(response.last_name){
+						user.last_name=response.last_name;
+					}
 					if(response.middle_name){
 						user.middle_name=response.middle_name;
 					}
@@ -189,19 +194,22 @@ passport.use(new FacebookStrategy({
 					if(response.likes){
 						likes=response.likes.data;
 						var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
-						
 						for(var i in likes)
 						{
-							 likeList= likeList+likes[i].id + ', ';
+							 likeList=likeList+likes[i].id + ', ';
 							 likeInsertQuery=likeInsertQuery+user.id + "', '" + likes[i].id + "'), ('";
 						}
-						pool.getConnection().then(function(connection){
-							connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
-							connection.release();
-						}).catch(function(err) {
-							console.log(err);
-						});
-						likeList="("+likeList.slice(0,likeList.length-2)+")";	
+						
+							pool.getConnection().then(function(connection){
+								connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
+								connection.release();
+							}).catch(function(err) {
+								console.log(err);
+							});
+						
+						
+						likeList="("+likeList.slice(0,likeList.length-2)+")";
+						
 					}
 					else{
 						likeList="('1')"
