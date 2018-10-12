@@ -256,8 +256,16 @@ passport.use(new FacebookStrategy({
 							var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
 							connection.query(isUserInUser_Celeb).then(function(rows){
 								var result=rows;
-								console.log(result);
-								connection.query(selectYourCelebQuery);							
+								//console.log(result);
+								connection.query(selectYourCelebQuery).then(function(rows, result){
+									var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;									
+									if(rows.length===0){
+										console.log("User not in User_Celeb")
+										sqlCelebUpdate="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";										
+									}
+									connection.query(sqlCelebUpdate);
+									
+								});							
 								
 							});
 						});						
