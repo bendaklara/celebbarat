@@ -354,7 +354,7 @@ function mysqlrequest(user, connection) {
 					user.fbLink=facebookLink;
 					console.log("Req User updated");	
 						//console.log(user);
-					fbrequest(accessToken, rows[0].celeb_fb_id +'/picture')
+					fbrequest(user.token, rows[0].celeb_fb_id +'/picture')
 						.then(function(response) {
 							user.celeb_pic=response;
 							console.log("Celeb pic: " + user.celeb_pic);
