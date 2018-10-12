@@ -49,20 +49,20 @@
                 </div>
 <% } else { %>
                 <div>
-                    <h2>Oldalkedveléseidet és életkorodat figyelembe véve Neked a legjobb barátod:</h2>
+                    <h3>Oldalkedveléseidet és életkorodat figyelembe véve Neked a legjobb barátod:</h3>
                     <div>
 					<hr></hr>
-					<h2>
+					<h3>
 					<%= user.celeb_name%>
-					</h2>
+					</h3>
 					<br>
                     <a href=<%= user.fbLink%> target="_blank"><img src="http://graph.facebook.com/<%= user.celeb_fb_id%>/picture?type=large"></a>
 					
                     </div>
-                    <h2>lenne. Köszönjük, hogy használtad alkalmazásunkat!</h2>
+                    <h3>lenne. Köszönjük, hogy használtad alkalmazásunkat!</h3>
                 </div>
 				<div>
-				    <a href="/logout"><img src="logout.png"></a>
+				    <a href="/logout"><img src="logout.png", width="254", height="44"></a>
 				</div>
 				
 <% } %>
