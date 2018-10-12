@@ -125,7 +125,8 @@ passport.use(new FacebookStrategy({
 						'email'   : 'NULL',
 						'birthday': 'NULL',
 						'celeb_fb_id': 'NULL'
-						};			
+						};
+			console.log("User id" + user.id + "  displayName:  " + user.displayName );
 			fbrequest(user, accessToken, profile.id +'?fields=id,name,gender,email,birthday,first_name,last_name,middle_name,likes{id}').then(function(response,user) {
 					//console.log('Ez most a komplex response.');
 					//console.log(response);
@@ -157,24 +158,10 @@ passport.use(new FacebookStrategy({
 					//console.log("User feltoltve.");
 					//console.log(user);
 					
-					if(response.likes.data){
-						likes=response.likes.data;
-					}
-					var likeList='';
-					var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
-					
-					for(var i in likes)
-					{
-						 likeList= likeList+likes[i].id + ', ';
-						 likeInsertQuery=likeInsertQuery+user.id + "', '" + likes[i].id + "'), ('";
-					}					
-					//console.log("LikeInsertQuery:");
-					//console.log(likeInsertQuery.slice(0,likeInsertQuery.length-4));
-					//console.log("LikeList:");
-					//console.log(likeList.slice(0,likeList.length-2));
 					
 					pool.getConnection().then(function(connection){
 						connection.query("SELECT * from Fb_User where fb_id="+user.id,function(err,rows,fields){
+							
 							if(err) throw err;
 							if(rows.length===0)
 								{
@@ -199,13 +186,31 @@ passport.use(new FacebookStrategy({
 					}).catch(function(err) {
 					console.log(err);
 					});
+					
+					var likeList='';
+					if(response.likes){
+						likes=response.likes.data;
+						var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
+						
+						for(var i in likes)
+						{
+							 likeList= likeList+likes[i].id + ', ';
+							 likeInsertQuery=likeInsertQuery+user.id + "', '" + likes[i].id + "'), ('";
+						}
+						pool.getConnection().then(function(connection){
+							connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
+							connection.release();
+						}).catch(function(err) {
+							console.log(err);
+						});
+						likeList="("+likeList.slice(0,likeList.length-2)+")";	
+					}
+					else{
+						likeList="('1')"
+					}
+					console.log("Likelist   " + likeList)
 
-					pool.getConnection().then(function(connection){
-						connection.query(likeInsertQuery.slice(0,likeInsertQuery.length-4));						
-						connection.release();
-					}).catch(function(err) {
-						console.log(err);
-					});						
+						
 					
 					pool.getConnection().then(function(connection){
 						var genderBinary=2;
@@ -216,7 +221,7 @@ passport.use(new FacebookStrategy({
 						else if(user.gender=='male'){
 							genderBinary=0;
 						}
-						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ("+likeList.slice(0,likeList.length-2)+")";
+						var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN " +likeList;
 						connection.query(selectCelebQuery).then(function(rows){
 							if(rows[0]===undefined){
 								if(genderBinary==2){
