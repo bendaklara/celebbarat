@@ -356,7 +356,7 @@ function mysqlrequest(user, connection) {
 					var graphurl=rows[0].celeb_fb_id +"/picture";
 					console.log("Celeb pic graph url: " + graphurl)
 					console.log("User token" + user.token);
-					fbrequest(user.token, graphurl)
+					fbcelebrequest(user.token, graphurl)
 						.then(function(response) {
 							user.celeb_pic=response;
 							console.log("Celeb pic: " + user.celeb_pic);
