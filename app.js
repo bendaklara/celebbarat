@@ -300,7 +300,13 @@ app.get('/', function(req, res){
 	pool.getConnection().then(function(connection){
 		if(req.user!=undefined){
 			var facebookLink='';
+			var celebUserUpdated=false;
 			var getUserCelebQuery="SELECT celeb_fb_id FROM User_Celeb WHERE user_fb_id="+String(req.user.id);
+			connection.query(getUserCelebQuery).then(function(rows){
+				if(rows[0]!=undefined){
+					celebUserUpdated=true;
+				}
+			});
 			//console.log(getUserCelebQuery);
 				do {
 					connection.query(getUserCelebQuery).then(function(rows){
@@ -308,6 +314,7 @@ app.get('/', function(req, res){
 							printAll();
 						}
 						else if(rows[0].celeb_fb_id){
+							celebUserUpdated=true;
 							facebookLink="https://facebook.com/" + rows[0].celeb_fb_id;
 							console.log(facebookLink);
 							req.user.celeb_fb_id=rows[0].celeb_fb_id;
@@ -317,7 +324,7 @@ app.get('/', function(req, res){
 						}
 					});	
 				}
-				while (rows[0]===undefined);
+				while (!celebUserUpdated);
 			
 		
 		}
