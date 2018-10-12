@@ -232,8 +232,9 @@ passport.use(new FacebookStrategy({
 						console.log(likeList);
 						var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
 						connection.query(isUserInUser_Celeb).then(function(rows){
+							console.log
 							var userInUserCeleb=true;
-							if(rows===undefined)
+							if(rows.length===0)
 							{
 								userInUserCeleb=false;
 							}
