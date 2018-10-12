@@ -291,10 +291,9 @@ app.use(express.static(__dirname + '/public'));
 function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
-		//console.log("User id in Promise: "  + user.id);
+		console.log("User id in Promise: "  + user.id);
 		//var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
-		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id LIKE '108786010105448'";
-		
+		var getUserCelebQuery="SELECT * FROM Celeb WHERE name LIKE '%Benda Klara%'";
 		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
 				console.log("Facebook query returned." );
