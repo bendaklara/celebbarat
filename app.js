@@ -293,7 +293,7 @@ function mysqlrequest(user, connection) {
 		var facebookLink='';
 		//console.log("User id in Promise: "  + user.id);
 		//var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id="+String(user.id);
-		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id=108786010105448";
+		var getUserCelebQuery="SELECT celeb_fb_id, celeb_name FROM User_Celeb WHERE user_fb_id LIKE '108786010105448'";
 		
 		console.log(getUserCelebQuery);
 		connection.query(getUserCelebQuery).then(function(rows){
