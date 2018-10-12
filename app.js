@@ -289,9 +289,9 @@ function mysqlrequest(user, connection) {
 						user.celeb_fb_id=rows[0].celeb_fb_id;
 						user.fbLink=facebookLink;
 						console.log("Req User updated");	
-						console.log(user);
+						//console.log(user);
 						}					
-					resolve(user);				
+					resolve(user);									
 				} else {
 					setTimeout(
 					  () => {
@@ -313,21 +313,32 @@ app.get('/', function(req, res){
 		pool.getConnection().then(function(connection){
 			mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
-					console.log(req.user);
-					console.log(req.user.celeb_fb_id);			
+					//console.log(req.user);
+					//console.log(req.user.celeb_fb_id);			
 					res.render('index', { user: req.user });
 					connection.release();				
 				
 				}, function(error) {
 					console.log("Error! ..." + error);
-					req.user=error;	
-					console.log("req.user.celeb_fb_id undefined");
+					req.user=error;					
+					console.log("req.user.celeb_fb_id undefined");					
 					mysqlrequest(req.user, connection).then(function(response) {
 						req.user=response;
-						console.log(req.user);
+						console.log("After first error, then success the user is: " + req.user);
+						res.render('index', { user: req.user });
+						connection.release();				
 					}, function(error) {
 						console.log("Error! ..." + error);
-						console.log("User id:   " + error.id);				
+						req.user=error;					
+						console.log("req.user.celeb_fb_id undefined");					
+						mysqlrequest(req.user, connection).then(function(response) {
+							req.user=response;
+							console.log("After first error, then success the user is: " + req.user);
+							res.render('index', { user: req.user });
+							connection.release();				
+						}, function(error) {
+							console.log("Error! ..." + error);
+						});						
 					});			
 				}
 			);	
