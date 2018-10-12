@@ -275,7 +275,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
 
 
-function mysqlrequest(connection, user) {
+function mysqlrequest(user, connection) {
 	return new Promise(function(resolve, reject) {
 		var facebookLink='';
 		console.log("User id in Promise: "  + user.id);
