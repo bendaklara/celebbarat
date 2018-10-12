@@ -172,7 +172,7 @@ passport.use(new FacebookStrategy({
 								//console.log("There is no such user, adding now");
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
-								connection.query(userInsertCelebQuery);
+								connection.query(userInsertQuery);
 							
 							} else {
 								//console.log("User already exists in database");
