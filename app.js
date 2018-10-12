@@ -244,8 +244,8 @@ passport.use(new FacebookStrategy({
 								
 							}
 							connection.query(selectYourCelebQuery).then(function(rows){
-								var sqlCelebUpdate="INSERT IGNORE INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('"+ String(user.id)+ "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";
-								//console.log(sqlCelebUpdate);
+								var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
+								console.log(sqlCelebUpdate);
 								connection.query(sqlCelebUpdate);
 								//console.log("Kiment a CelebUpdate query.");
 								
@@ -384,7 +384,7 @@ app.get('/privacy', ensureAuthenticated, function(req, res){
   res.render('privacy');
 });
 
-app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email', 'public_profile', 'user_gender', 'user_birthday', 'user_likes']}));
+app.get('/auth/facebook', passport.authenticate('facebook',{scope:['user_gender', 'user_birthday', 'user_likes']}));
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect : '/', failureRedirect: '/' }),
