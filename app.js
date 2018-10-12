@@ -291,6 +291,7 @@ function mysqlrequest(user, connection) {
 					user.celeb_name=rows[0].celeb_name;
 					user.fbLink=facebookLink;
 					console.log("Req User updated");
+					resolve(user);
 /*					var graphurl=rows[0].celeb_fb_id +"/picture";
 					console.log("Celeb pic graph url: " + graphurl)
 					console.log("User token" + user.token);
