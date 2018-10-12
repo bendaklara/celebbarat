@@ -172,9 +172,7 @@ passport.use(new FacebookStrategy({
 								//console.log("There is no such user, adding now");
 								
 								var userInsertQuery="INSERT INTO Fb_User(fb_id,first_name,last_name,middle_name,email,gender,birthday) VALUES('" + String(user.id) + "', '" + String(user.first_name) + "', '" + String(user.last_name) + "', '" + String(user.middle_name) + "', '" + String(user.email) + "', '" + String(user.gender) + "', '" + String(user.birthday) + "')";
-								var userInsertCelebQuery="INSERT IGNORE INTO User_Celeb (user_fb_id) VALUES ('" + String(user.id) + ")')";
 								connection.query(userInsertCelebQuery);
-								connection.query(userInsertQuery);
 							
 							} else {
 								//console.log("User already exists in database");
@@ -194,8 +192,7 @@ passport.use(new FacebookStrategy({
 					var selectCelebQuery="SELECT facebook_id FROM Celeb WHERE facebook_id IN ('1')";
 					if(response.likes){
 						if(response.likes.data.length>0){
-							console.log("Na, MOST AZ EGYNEL TOBB LIKE FELTETELVIZSGALAT UTAN IS VAN LIKE...");
-							console.log(response.likes);
+							//console.log(response.likes);
 							likes=response.likes.data;
 							var likeInsertQuery="INSERT IGNORE INTO Page_Likes (user_fb_id, page_fb_id) VALUES ('";
 							for(var i in likes)
@@ -256,12 +253,19 @@ passport.use(new FacebookStrategy({
 								}
 								
 							}
-							connection.query(selectYourCelebQuery).then(function(rows){
-								var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
-								//console.log(sqlCelebUpdate);
-								connection.query(sqlCelebUpdate);
-								//console.log("Kiment a CelebUpdate query.");
-								
+							var isUserInUser_Celeb =  "SELECT user_fb_id FROM User_Celeb WHERE user_fb_id =" + String(user.id);
+							connection.query(isUserInUser_Celeb).then(function(connection, rows){
+								var result=rows;
+								console.log(result);
+								connection.query(selectYourCelebQuery).then(function(connection, rows, result){
+										console.log(result);
+										var sqlCelebUpdate=var sqlCelebUpdate="UPDATE User_Celeb SET celeb_fb_id='" + String(rows[0].facebook_id) + "', celeb_name= '" +String(rows[0].name) + "' WHERE user_fb_id LIKE '" + String(user.id) + "'" ;
+										if(result===undefined){
+											console.log("Result undefined.");
+											sqlCelebUpdate="INSERT INTO User_Celeb (user_fb_id, celeb_fb_id, celeb_name) VALUES ('" + String(user.id) + "', '" + String(rows[0].facebook_id) + "', '" +String(rows[0].name) + "')";
+										}
+										connection.query(sqlCelebUpdate);										
+								});
 							});
 						});						
 						connection.release();
