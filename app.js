@@ -406,16 +406,12 @@ app.get('/', function(req, res){
 	
 });
 
-app.get('/friend', function(req, res){
-  res.render('friend', { user: req.user });
+app.get('/privacy', function(req, res){
+  res.render('privacy');
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
-});
-
-app.get('/privacy', ensureAuthenticated, function(req, res){
-  res.render('privacy');
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook',{scope:['user_gender', 'user_birthday', 'user_likes']}));
