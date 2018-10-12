@@ -309,14 +309,17 @@ function mysqlrequest(connection, user) {
 
 app.get('/', function(req, res){
 	if(req.user!=undefined){
+		console.log("req.user defined.");
 		pool.getConnection().then(function(connection){
 			if(req.user.celeb_fb_id===undefined){
+				console.log("req.user.celeb_fb_id undefined");
 				mysqlrequest(req.user, connection).then(function(response) {
 					req.user=response;
 					console.log(user);
 				});			
 			}
 			else{
+				console.log(req.user.celeb_fb_id);			
 				res.render('index', { user: req.user });
 				connection.release();				
 			}
@@ -327,6 +330,7 @@ app.get('/', function(req, res){
 		});	
 	}
 	else{
+		console.log("req.user undefined");
 		res.render('index', { user: req.user });		
 	}
 	
